@@ -1,6 +1,7 @@
 "use strict";
 
 const map = document.querySelector(`.map`);
+let pin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 
 const Hotels = {
   COUNT: 8,
@@ -20,24 +21,24 @@ map.classList.remove(`map--faded`);
 function getHotels() {
   let hotels = [];
   for (let i = 1; i <= Hotels.COUNT; i++) {
-    hotels.push(getHotel(i));
+    let hotelNumber = i;
+    hotels.push(getHotel(hotelNumber));
   }
   return hotels;
 }
 
-let hotels = getHotels();
 
-function getHotel(i) {
+function getHotel(hotelNumber) {
   const hotel = {
     author: {
-      avatar: `img/avatars/user0${i}.png`
+      avatar: `img/avatars/user0${hotelNumber}.png`
     },
     offer: {
-      title: `Hotel № ${i}`,
-      price: 300 * i,
-      type: getHotelType(i),
-      rooms: i,
-      guests: i * 2,
+      title: `Hotel № ${hotelNumber}`,
+      price: 300 * hotelNumber,
+      type: getHotelType(hotelNumber),
+      rooms: hotelNumber,
+      guests: hotelNumber * 2,
       checkin: getHotelCheckin(),
       checkout: getHotelCheckout(),
       features: getHotelFeatures(),
@@ -81,12 +82,12 @@ function getHotelCheckout() {
   }
 }
 
-function getHotelType(i) {
-  if (i / 1 === 1 || i / 5 === 1) {
+function getHotelType(hotelNumber) {
+  if (hotelNumber / 1 === 1 || hotelNumber / 5 === 1) {
     return Hotels.TYPE[0];
-  } else if (i / 2 === 1 || i / 6 === 1) {
+  } else if (hotelNumber / 2 === 1 || hotelNumber / 6 === 1) {
     return Hotels.TYPE[1];
-  } else if (i / 3 === 1 || i / 7 === 1) {
+  } else if (hotelNumber / 3 === 1 || hotelNumber / 7 === 1) {
     return Hotels.TYPE[2];
   } else {
     return Hotels.TYPE[3];
@@ -121,20 +122,22 @@ function getMapWidth() {
   return map.offsetWidth;
 }
 
-function createPin(i) {
-  let pin = document.querySelector(`#pin`).content.querySelector(`.map__pin`).cloneNode(true);
-  pin.style = `left: ${hotels[i].location.x}px; top: ${hotels[i].location.y}px`;
+function createPin(hotel) {
+  pin = pin.cloneNode(true);
+  pin.style = `left: ${hotel.location.x}px; top: ${hotel.location.y}px`;
   let pinImg = pin.querySelector(`img`);
-  pinImg.src = `${hotels[i].author.avatar}`;
-  pinImg.setAttribute(`alt`, `${hotels[i].offer.title}`);
+  pinImg.src = `${hotel.author.avatar}`;
+  pinImg.setAttribute(`alt`, `${hotel.offer.title}`);
   return pin;
 }
 
-function renderPins() {
+function renderPins(hotels) {
   let fragment = document.createDocumentFragment();
   for (let i = 0; i < hotels.length; i++) {
-    fragment.appendChild(createPin(i));
+    let hotel = hotels[i];
+    fragment.appendChild(createPin(hotel));
   }
   document.querySelector(`.map__pins`).appendChild(fragment);
 }
-renderPins();
+
+renderPins(getHotels());
