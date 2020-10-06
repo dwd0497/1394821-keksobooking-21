@@ -1,8 +1,5 @@
 "use strict";
 
-const map = document.querySelector(`.map`);
-let pin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
-
 const Hotels = {
   COUNT: 8,
   TYPE: [`palace`, `flat`, `house`, `bungalow`],
@@ -16,13 +13,15 @@ const Hotels = {
   ]
 };
 
+const map = document.querySelector(`.map`);
+const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+
 map.classList.remove(`map--faded`);
 
 function getHotels() {
-  let hotels = [];
+  const hotels = [];
   for (let i = 1; i <= Hotels.COUNT; i++) {
-    let hotelNumber = i;
-    hotels.push(getHotel(hotelNumber));
+    hotels.push(getHotel(i));
   }
   return hotels;
 }
@@ -36,7 +35,7 @@ function getHotel(hotelNumber) {
     offer: {
       title: `Hotel № ${hotelNumber}`,
       price: 300 * hotelNumber,
-      type: getHotelType(hotelNumber),
+      type: getRandomHotelType(hotelNumber),
       rooms: hotelNumber,
       guests: hotelNumber * 2,
       checkin: getHotelCheckin(),
@@ -82,12 +81,14 @@ function getHotelCheckout() {
   }
 }
 
-function getHotelType(hotelNumber) {
-  if (hotelNumber / 1 === 1 || hotelNumber / 5 === 1) {
+// Функция условно задает тип снимаемого помещения, в зависимости от порядкового номера помещения в массиве
+
+function getRandomHotelType(hotelNumber) {
+  if (hotelNumber % 4 === 0) {
     return Hotels.TYPE[0];
-  } else if (hotelNumber / 2 === 1 || hotelNumber / 6 === 1) {
+  } else if (hotelNumber % 3 === 0) {
     return Hotels.TYPE[1];
-  } else if (hotelNumber / 3 === 1 || hotelNumber / 7 === 1) {
+  } else if (hotelNumber % 2 === 0) {
     return Hotels.TYPE[2];
   } else {
     return Hotels.TYPE[3];
@@ -95,16 +96,16 @@ function getHotelType(hotelNumber) {
 }
 
 function getHotelFeatures() {
-  let features = [];
-  for (let i = 0; i < getRandomIntInclusive(1, Hotels.FEATURES.length); i++) {
+  const features = [];
+  for (let i = 0; i <= getRandomIntInclusive(1, Hotels.FEATURES.length - 1); ++i) {
     features.push(Hotels.FEATURES[i]);
   }
   return features;
 }
 
 function getHotelPhotos() {
-  let photos = [];
-  for (let i = 0; i < getRandomIntInclusive(1, Hotels.PHOTOS.length); i++) {
+  const photos = [];
+  for (let i = 0; i <= getRandomIntInclusive(1, Hotels.PHOTOS.length - 1); i++) {
     photos.push(Hotels.PHOTOS[i]);
   }
   return photos;
@@ -123,18 +124,18 @@ function getMapWidth() {
 }
 
 function createPin(hotel) {
-  pin = pin.cloneNode(true);
+  const pin = pinTemplate.cloneNode(true);
   pin.style = `left: ${hotel.location.x}px; top: ${hotel.location.y}px`;
-  let pinImg = pin.querySelector(`img`);
+  const pinImg = pin.querySelector(`img`);
   pinImg.src = `${hotel.author.avatar}`;
   pinImg.setAttribute(`alt`, `${hotel.offer.title}`);
   return pin;
 }
 
 function renderPins(hotels) {
-  let fragment = document.createDocumentFragment();
+  const fragment = document.createDocumentFragment();
   for (let i = 0; i < hotels.length; i++) {
-    let hotel = hotels[i];
+    const hotel = hotels[i];
     fragment.appendChild(createPin(hotel));
   }
   document.querySelector(`.map__pins`).appendChild(fragment);
