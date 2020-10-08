@@ -45,9 +45,9 @@ function getHotel(hotelNumber) {
       guests: hotelNumber * 2,
       checkin: getHotelCheckin(),
       checkout: getHotelCheckout(),
-      features: getHotelFeatures(),
+      features: getRandomSlice(Hotels.FEATURES),
       description: `описание отеля`,
-      photos: getHotelPhotos()
+      photos: getRandomSlice(Hotels.PHOTOS)
     },
     location: {
       x: getHotelLocationX(),
@@ -100,20 +100,8 @@ function getRandomHotelType(hotelNumber) {
   }
 }
 
-function getHotelFeatures() {
-  const features = [];
-  for (let i = 0; i <= getRandomIntInclusive(1, Hotels.FEATURES.length - 1); ++i) {
-    features.push(Hotels.FEATURES[i]);
-  }
-  return features;
-}
-
-function getHotelPhotos() {
-  const photos = [];
-  for (let i = 0; i <= getRandomIntInclusive(1, Hotels.PHOTOS.length - 1); i++) {
-    photos.push(Hotels.PHOTOS[i]);
-  }
-  return photos;
+function getRandomSlice(inArr) {
+  return inArr.slice(getRandomIntInclusive(0, inArr.length - 1));
 }
 
 function getHotelLocationY() {
