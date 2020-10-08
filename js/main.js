@@ -149,35 +149,43 @@ renderPins(hotelsInfo);
 
 function createСard(hotel) {
   const сard = cardTemplate.cloneNode(true);
-  addPropertyToElement(сard, `.popup__title`, hotel.offer.title, false);
+  сard.querySelector(`.popup__title`).innerText = hotel.offer.title;
   сard.querySelector(`.popup__text--address`).innerText = hotel.offer.address;
   сard.querySelector(`.popup__text--price`).innerText = `${hotel.offer.price}₽/ночь`;
   сard.querySelector(`.popup__type`).innerText = hotel.offer.type;
-  сard.querySelector(`.popup__text--capacity`).innerText = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
-  сard.querySelector(`.popup__text--time`).innerText = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
+  if (hotel.offer.rooms && hotel.offer.guests) {
+    сard.querySelector(`.popup__text--capacity`).innerText = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
+  } else {
+    сard.querySelector(`.popup__text--capacity`).remove();
+  }
+  if (hotel.offer.checkin && hotel.offer.checkout) {
+    сard.querySelector(`.popup__text--time`).innerText = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
+  } else {
+    сard.querySelector(`.popup__text--time`).remove();
+  }
   сard.querySelector(`.popup__features`).innerText = hotel.offer.features.join(` `);
   сard.querySelector(`.popup__description`).innerText = hotel.offer.description;
-  addPropertyToElement(сard, `.popup__photos`, createImgSrc(hotel.offer.photos), true);
+  сard.querySelector(`.popup__photos`).innerHTML = createImgSrc(hotel.offer.photos);
   сard.querySelector(`.popup__avatar`).src = hotel.author.avatar;
   return сard;
 }
 
-function addPropertyToElement(parentElement, elementSlector, property, isHTMLEnters) {
-  const item = parentElement.querySelector(`${elementSlector}`);
-  if (isHTMLEnters === true) {
-    if (property !== ``) {
-      item.innerHTML = property;
-    } else {
-      item.style.display = `none`;
-    }
-  } else {
-    if (property !== ``) {
-      item.innerText = property;
-    } else {
-      item.style.display = `none`;
-    }
-  }
-}
+// function addPropertyToElement(parentElement, elementSlector, property, isHTMLEnters) {
+//   const item = parentElement.querySelector(`${elementSlector}`);
+//   if (isHTMLEnters === true) {
+//     if (property !== ``) {
+//       item.innerHTML = property;
+//     } else {
+//       item.remove();
+//     }
+//   } else {
+//     if (property !== ``) {
+//       item.innerText = property;
+//     } else {
+//       item.remove();
+//     }
+//   }
+// }
 
 function createImgSrc(photosSrcs) {
   for (let i = 0; i < photosSrcs.length; i++) {
