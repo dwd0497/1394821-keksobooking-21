@@ -13,6 +13,11 @@ const Hotels = {
   ]
 };
 
+const Pin = {
+  WIDTH: 50,
+  HEIGHT: 70
+};
+
 const map = document.querySelector(`.map`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 
@@ -123,12 +128,17 @@ function getMapWidth() {
   return map.offsetWidth;
 }
 
+function movePinTo(pin, location) {
+  pin.style.top = `${location.y - Pin.HEIGHT}px`;
+  pin.style.left = `${location.x - Pin.WIDTH / 2}px`;
+}
+
 function createPin(hotel) {
   const pin = pinTemplate.cloneNode(true);
-  pin.style = `left: ${hotel.location.x}px; top: ${hotel.location.y}px`;
+  movePinTo(pin, hotel.location);
   const pinImg = pin.querySelector(`img`);
   pinImg.src = `${hotel.author.avatar}`;
-  pinImg.setAttribute(`alt`, `${hotel.offer.title}`);
+  pinImg.alt = `${hotel.offer.title}`;
   return pin;
 }
 
