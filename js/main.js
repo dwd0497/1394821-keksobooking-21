@@ -20,6 +20,8 @@ const Pin = {
 
 const map = document.querySelector(`.map`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
+
 
 map.classList.remove(`map--faded`);
 
@@ -139,4 +141,56 @@ function renderPins(hotels) {
   document.querySelector(`.map__pins`).appendChild(fragment);
 }
 
-renderPins(getHotels());
+const hotelsInfo = getHotels();
+
+renderPins(hotelsInfo);
+
+// Тут код для отрисовки карточки отеля
+
+function createСard(hotel) {
+  const сard = cardTemplate.cloneNode(true);
+  addPropertyToElement(сard, `.popup__title`, hotel.offer.title, false);
+  сard.querySelector(`.popup__text--address`).innerText = hotel.offer.address;
+  сard.querySelector(`.popup__text--price`).innerText = `${hotel.offer.price}₽/ночь`;
+  сard.querySelector(`.popup__type`).innerText = hotel.offer.type;
+  сard.querySelector(`.popup__text--capacity`).innerText = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
+  сard.querySelector(`.popup__text--time`).innerText = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
+  сard.querySelector(`.popup__features`).innerText = hotel.offer.features.join(` `);
+  сard.querySelector(`.popup__description`).innerText = hotel.offer.description;
+  addPropertyToElement(сard, `.popup__photos`, createImgSrc(hotel.offer.photos), true);
+  сard.querySelector(`.popup__avatar`).src = hotel.author.avatar;
+  return сard;
+}
+
+function addPropertyToElement(parentElement, elementSlector, property, isHTMLEnters) {
+  const item = parentElement.querySelector(`${elementSlector}`);
+  if (isHTMLEnters === true) {
+    if (property !== ``) {
+      item.innerHTML = property;
+    } else {
+      item.style.display = `none`;
+    }
+  } else {
+    if (property !== ``) {
+      item.innerText = property;
+    } else {
+      item.style.display = `none`;
+    }
+  }
+}
+
+function createImgSrc(photosSrcs) {
+  for (let i = 0; i < photosSrcs.length; i++) {
+    photosSrcs[i] = `<img width="100px" src="${photosSrcs[i]}">`;
+  }
+
+  return photosSrcs.join(` `);
+}
+
+function renderCards(hotels) {
+  const fragment = document.createDocumentFragment();
+  fragment.appendChild(createСard(hotels[0]));
+  map.insertBefore(fragment, document.querySelector(`.map__filters-container`));
+}
+
+renderCards(hotelsInfo);
