@@ -142,18 +142,9 @@ function createPin(hotel) {
   return pin;
 }
 
-function renderPins(hotels) {
-  const fragment = document.createDocumentFragment();
-  for (let i = 0; i < hotels.length; i++) {
-    const hotel = hotels[i];
-    fragment.appendChild(createPin(hotel));
-  }
-  pinsElement.appendChild(fragment);
-}
-
 const hotelsInfo = getHotels();
 
-renderPins(hotelsInfo);
+renderElements(hotelsInfo, pinsElement, createPin);
 
 // Тут код для отрисовки карточки отеля
 
@@ -164,7 +155,7 @@ function createСard(hotel) {
       hotel.offer.title,
       сard.querySelector(`.popup__title`),
       (element) => {
-        element.innerText = hotel.offer.title;
+        element.textContent = hotel.offer.title;
       }
   );
 
@@ -172,7 +163,7 @@ function createСard(hotel) {
       hotel.offer.address,
       сard.querySelector(`.popup__text--address`),
       (element) => {
-        element.innerText = hotel.offer.address;
+        element.textContent = hotel.offer.address;
       }
   );
 
@@ -180,7 +171,7 @@ function createСard(hotel) {
       hotel.offer.price,
       сard.querySelector(`.popup__text--price`),
       (element) => {
-        element.innerText = `${hotel.offer.price}₽/ночь`;
+        element.textContent = `${hotel.offer.price}₽/ночь`;
       }
   );
 
@@ -188,7 +179,7 @@ function createСard(hotel) {
       hotel.offer.type,
       сard.querySelector(`.popup__type`),
       (element) => {
-        element.innerText = hotelTypes[hotel.offer.type];
+        element.textContent = hotelTypes[hotel.offer.type];
       }
   );
 
@@ -196,7 +187,7 @@ function createСard(hotel) {
       hotel.offer.rooms && hotel.offer.guests,
       сard.querySelector(`.popup__text--capacity`),
       (element) => {
-        element.innerText = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
+        element.textContent = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
       }
   );
 
@@ -204,7 +195,7 @@ function createСard(hotel) {
       hotel.offer.checkin && hotel.offer.checkout,
       сard.querySelector(`.popup__text--time`),
       (element) => {
-        element.innerText = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
+        element.textContent = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
       }
   );
 
@@ -212,7 +203,7 @@ function createСard(hotel) {
       hotel.offer.description,
       сard.querySelector(`.popup__description`),
       (element) => {
-        element.innerText = hotel.offer.description;
+        element.textContent = hotel.offer.description;
       }
   );
 
@@ -224,8 +215,9 @@ function createСard(hotel) {
       }
   );
 
-  renderFeatures(сard.querySelector(`.popup__features`), hotel.offer.features);
-  renderPhotos(сard.querySelector(`.popup__photos`), hotel.offer.photos);
+  renderElements(hotel.offer.photos, сard.querySelector(`.popup__photos`), renderPhoto);
+
+  renderElements(hotel.offer.features, сard.querySelector(`.popup__features`), renderFeature);
 
   return сard;
 }
@@ -237,15 +229,15 @@ function renderFeatureField(condition, element, cb) {
   return element.remove();
 }
 
-function renderFeatures(featuresElement, features) {
-  removeChildrens(featuresElement);
+function renderElements(elements, containerElement, renderElement) {
+  removeChildren(containerElement);
   const fragment = document.createDocumentFragment();
-  features.forEach((feature) => {
-    const featureElement = renderFeature(feature);
-    fragment.appendChild(featureElement);
+  elements.forEach((element) => {
+    fragment.appendChild(renderElement(element));
   });
-  featuresElement.appendChild(fragment);
+  containerElement.appendChild(fragment);
 }
+
 
 function renderFeature(feature) {
   const featureElement = document.createElement(`li`);
@@ -253,36 +245,23 @@ function renderFeature(feature) {
   return featureElement;
 }
 
-function renderPhotos(featuresElement, imgs) {
-  removeChildrens(featuresElement);
-  const fragment = document.createDocumentFragment();
-  imgs.forEach((img) => {
-    const featureElement = renderPhoto(img);
-    fragment.appendChild(featureElement);
-  });
-  featuresElement.appendChild(fragment);
-}
-
 function renderPhoto(img) {
   const imgElement = document.createElement(`img`);
   imgElement.classList.add(`popup__photo`);
-  imgElement.width = `40`;
-  imgElement.height = `40`;
+  imgElement.style.width = `40px`;
+  imgElement.style.height = `40px`;
   imgElement.src = `${img}`;
   return imgElement;
 }
 
-function removeChildrens(ParentElement) {
-  while (ParentElement.firstChild) {
-    ParentElement.firstChild.remove();
+function removeChildren(parentElement) {
+  while (parentElement.firstChild) {
+    parentElement.firstChild.remove();
   }
 }
 
-
-function renderCards(hotels) {
-  const fragment = document.createDocumentFragment();
-  fragment.appendChild(createСard(hotels[0]));
-  map.insertBefore(fragment, filtersContainerElement);
+function renderCard(hotels) {
+  map.insertBefore(createСard(hotels[0]), filtersContainerElement);
 }
 
-renderCards(hotelsInfo);
+renderCard(hotelsInfo);
