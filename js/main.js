@@ -3,8 +3,8 @@
 const Hotels = {
   COUNT: 8,
   TYPE: [`palace`, `flat`, `house`, `bungalow`],
-  CHECKIN: [`12: 00`, `13: 00`, `14: 00`],
-  CHECKOUT: [`12: 00`, `13: 00`, `14: 00`],
+  CHECKIN: [`12:00`, `13:00`, `14:00`],
+  CHECKOUT: [`12:00`, `13:00`, `14:00`],
   FEATURES: [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`],
   PHOTOS: [
     `http://o0.github.io/assets/images/tokyo/hotel1.jpg`,
@@ -15,13 +15,23 @@ const Hotels = {
 
 const Pin = {
   WIDTH: 50,
-  HEIGHT: 70
+  HEIGHT: 70,
+  MIN_VERTICAL_COORD: 130,
+  MAX_VERTICAL_COORD: 630
 };
 
 const map = document.querySelector(`.map`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
+const pinsElement = document.querySelector(`.map__pins`);
+const filtersContainerElement = document.querySelector(`.map__filters-container`);
 
+const hotelTypes = {
+  flat: `Квартира`,
+  bungalow: `Бунгало`,
+  palace: `Дворец`,
+  house: `Дом`
+};
 
 map.classList.remove(`map--faded`);
 
@@ -102,12 +112,12 @@ function getRandomHotelType(hotelNumber) {
   }
 }
 
-function getRandomSlice(inArr) {
-  return inArr.slice(getRandomIntInclusive(0, inArr.length - 1));
+function getRandomSlice(elements) {
+  return elements.slice(getRandomIntInclusive(0, elements.length - 1));
 }
 
 function getHotelLocationY() {
-  return getRandomIntInclusive(130, 630);
+  return getRandomIntInclusive(Pin.MIN_VERTICAL_COORD, Pin.MAX_VERTICAL_COORD);
 }
 
 function getHotelLocationX() {
@@ -138,7 +148,7 @@ function renderPins(hotels) {
     const hotel = hotels[i];
     fragment.appendChild(createPin(hotel));
   }
-  document.querySelector(`.map__pins`).appendChild(fragment);
+  pinsElement.appendChild(fragment);
 }
 
 const hotelsInfo = getHotels();
@@ -149,56 +159,130 @@ renderPins(hotelsInfo);
 
 function createСard(hotel) {
   const сard = cardTemplate.cloneNode(true);
-  сard.querySelector(`.popup__title`).innerText = hotel.offer.title;
-  сard.querySelector(`.popup__text--address`).innerText = hotel.offer.address;
-  сard.querySelector(`.popup__text--price`).innerText = `${hotel.offer.price}₽/ночь`;
-  сard.querySelector(`.popup__type`).innerText = hotel.offer.type;
-  if (hotel.offer.rooms && hotel.offer.guests) {
-    сard.querySelector(`.popup__text--capacity`).innerText = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
-  } else {
-    сard.querySelector(`.popup__text--capacity`).remove();
-  }
-  if (hotel.offer.checkin && hotel.offer.checkout) {
-    сard.querySelector(`.popup__text--time`).innerText = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
-  } else {
-    сard.querySelector(`.popup__text--time`).remove();
-  }
-  сard.querySelector(`.popup__features`).innerText = hotel.offer.features.join(` `);
-  сard.querySelector(`.popup__description`).innerText = hotel.offer.description;
-  сard.querySelector(`.popup__photos`).innerHTML = createImgSrc(hotel.offer.photos);
-  сard.querySelector(`.popup__avatar`).src = hotel.author.avatar;
+
+  renderFeatureField(
+      hotel.offer.title,
+      сard.querySelector(`.popup__title`),
+      (element) => {
+        element.innerText = hotel.offer.title;
+      }
+  );
+
+  renderFeatureField(
+      hotel.offer.address,
+      сard.querySelector(`.popup__text--address`),
+      (element) => {
+        element.innerText = hotel.offer.address;
+      }
+  );
+
+  renderFeatureField(
+      hotel.offer.price,
+      сard.querySelector(`.popup__text--price`),
+      (element) => {
+        element.innerText = `${hotel.offer.price}₽/ночь`;
+      }
+  );
+
+  renderFeatureField(
+      hotel.offer.type,
+      сard.querySelector(`.popup__type`),
+      (element) => {
+        element.innerText = hotelTypes[hotel.offer.type];
+      }
+  );
+
+  renderFeatureField(
+      hotel.offer.rooms && hotel.offer.guests,
+      сard.querySelector(`.popup__text--capacity`),
+      (element) => {
+        element.innerText = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
+      }
+  );
+
+  renderFeatureField(
+      hotel.offer.checkin && hotel.offer.checkout,
+      сard.querySelector(`.popup__text--time`),
+      (element) => {
+        element.innerText = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
+      }
+  );
+
+  renderFeatureField(
+      hotel.offer.description,
+      сard.querySelector(`.popup__description`),
+      (element) => {
+        element.innerText = hotel.offer.description;
+      }
+  );
+
+  renderFeatureField(
+      hotel.author.avatar,
+      сard.querySelector(`.popup__avatar`),
+      (element) => {
+        element.src = hotel.author.avatar;
+      }
+  );
+
+  renderFeatures(сard.querySelector(`.popup__features`), hotel.offer.features);
+  renderPhotos(сard.querySelector(`.popup__photos`), hotel.offer.photos);
+
   return сard;
 }
 
-// function addPropertyToElement(parentElement, elementSlector, property, isHTMLEnters) {
-//   const item = parentElement.querySelector(`${elementSlector}`);
-//   if (isHTMLEnters === true) {
-//     if (property !== ``) {
-//       item.innerHTML = property;
-//     } else {
-//       item.remove();
-//     }
-//   } else {
-//     if (property !== ``) {
-//       item.innerText = property;
-//     } else {
-//       item.remove();
-//     }
-//   }
-// }
-
-function createImgSrc(photosSrcs) {
-  for (let i = 0; i < photosSrcs.length; i++) {
-    photosSrcs[i] = `<img width="100px" src="${photosSrcs[i]}">`;
+function renderFeatureField(condition, element, cb) {
+  if (condition) {
+    return cb(element);
   }
-
-  return photosSrcs.join(` `);
+  return element.remove();
 }
+
+function renderFeatures(featuresElement, features) {
+  removeChildrens(featuresElement);
+  const fragment = document.createDocumentFragment();
+  features.forEach((feature) => {
+    const featureElement = renderFeature(feature);
+    fragment.appendChild(featureElement);
+  });
+  featuresElement.appendChild(fragment);
+}
+
+function renderFeature(feature) {
+  const featureElement = document.createElement(`li`);
+  featureElement.classList.add(`popup__feature`, `popup__feature--${feature}`);
+  return featureElement;
+}
+
+function renderPhotos(featuresElement, imgs) {
+  removeChildrens(featuresElement);
+  const fragment = document.createDocumentFragment();
+  imgs.forEach((img) => {
+    const featureElement = renderPhoto(img);
+    fragment.appendChild(featureElement);
+  });
+  featuresElement.appendChild(fragment);
+}
+
+function renderPhoto(img) {
+  const imgElement = document.createElement(`img`);
+  imgElement.classList.add(`popup__photo`);
+  imgElement.width = `40`;
+  imgElement.height = `40`;
+  imgElement.src = `${img}`;
+  return imgElement;
+}
+
+function removeChildrens(ParentElement) {
+  while (ParentElement.firstChild) {
+    ParentElement.firstChild.remove();
+  }
+}
+
 
 function renderCards(hotels) {
   const fragment = document.createDocumentFragment();
   fragment.appendChild(createСard(hotels[0]));
-  map.insertBefore(fragment, document.querySelector(`.map__filters-container`));
+  map.insertBefore(fragment, filtersContainerElement);
 }
 
 renderCards(hotelsInfo);
