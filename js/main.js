@@ -3,8 +3,8 @@
 const Hotels = {
   COUNT: 8,
   TYPE: [`palace`, `flat`, `house`, `bungalow`],
-  CHECKIN: [`12: 00`, `13: 00`, `14: 00`],
-  CHECKOUT: [`12: 00`, `13: 00`, `14: 00`],
+  CHECKIN: [`12:00`, `13:00`, `14:00`],
+  CHECKOUT: [`12:00`, `13:00`, `14:00`],
   FEATURES: [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`],
   PHOTOS: [
     `http://o0.github.io/assets/images/tokyo/hotel1.jpg`,
@@ -13,8 +13,25 @@ const Hotels = {
   ]
 };
 
+const Pin = {
+  WIDTH: 50,
+  HEIGHT: 70,
+  MIN_VERTICAL_COORD: 130,
+  MAX_VERTICAL_COORD: 630
+};
+
 const map = document.querySelector(`.map`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
+const pinsElement = document.querySelector(`.map__pins`);
+const filtersContainerElement = document.querySelector(`.map__filters-container`);
+
+const hotelTypes = {
+  flat: `Квартира`,
+  bungalow: `Бунгало`,
+  palace: `Дворец`,
+  house: `Дом`
+};
 
 map.classList.remove(`map--faded`);
 
@@ -40,9 +57,9 @@ function getHotel(hotelNumber) {
       guests: hotelNumber * 2,
       checkin: getHotelCheckin(),
       checkout: getHotelCheckout(),
-      features: getHotelFeatures(),
+      features: getRandomSlice(Hotels.FEATURES),
       description: `описание отеля`,
-      photos: getHotelPhotos()
+      photos: getRandomSlice(Hotels.PHOTOS)
     },
     location: {
       x: getHotelLocationX(),
@@ -95,24 +112,12 @@ function getRandomHotelType(hotelNumber) {
   }
 }
 
-function getHotelFeatures() {
-  const features = [];
-  for (let i = 0; i <= getRandomIntInclusive(1, Hotels.FEATURES.length - 1); ++i) {
-    features.push(Hotels.FEATURES[i]);
-  }
-  return features;
-}
-
-function getHotelPhotos() {
-  const photos = [];
-  for (let i = 0; i <= getRandomIntInclusive(1, Hotels.PHOTOS.length - 1); i++) {
-    photos.push(Hotels.PHOTOS[i]);
-  }
-  return photos;
+function getRandomSlice(elements) {
+  return elements.slice(getRandomIntInclusive(0, elements.length - 1));
 }
 
 function getHotelLocationY() {
-  return getRandomIntInclusive(130, 630);
+  return getRandomIntInclusive(Pin.MIN_VERTICAL_COORD, Pin.MAX_VERTICAL_COORD);
 }
 
 function getHotelLocationX() {
@@ -123,22 +128,140 @@ function getMapWidth() {
   return map.offsetWidth;
 }
 
+function movePinTo(pin, location) {
+  pin.style.top = `${location.y - Pin.HEIGHT}px`;
+  pin.style.left = `${location.x - Pin.WIDTH / 2}px`;
+}
+
 function createPin(hotel) {
   const pin = pinTemplate.cloneNode(true);
-  pin.style = `left: ${hotel.location.x}px; top: ${hotel.location.y}px`;
+  movePinTo(pin, hotel.location);
   const pinImg = pin.querySelector(`img`);
   pinImg.src = `${hotel.author.avatar}`;
-  pinImg.setAttribute(`alt`, `${hotel.offer.title}`);
+  pinImg.alt = `${hotel.offer.title}`;
   return pin;
 }
 
-function renderPins(hotels) {
-  const fragment = document.createDocumentFragment();
-  for (let i = 0; i < hotels.length; i++) {
-    const hotel = hotels[i];
-    fragment.appendChild(createPin(hotel));
-  }
-  document.querySelector(`.map__pins`).appendChild(fragment);
+const hotelsInfo = getHotels();
+
+renderElements(hotelsInfo, pinsElement, createPin);
+
+// Тут код для отрисовки карточки отеля
+
+function createСard(hotel) {
+  const сard = cardTemplate.cloneNode(true);
+
+  renderFeatureField(
+      hotel.offer.title,
+      сard.querySelector(`.popup__title`),
+      (element) => {
+        element.textContent = hotel.offer.title;
+      }
+  );
+
+  renderFeatureField(
+      hotel.offer.address,
+      сard.querySelector(`.popup__text--address`),
+      (element) => {
+        element.textContent = hotel.offer.address;
+      }
+  );
+
+  renderFeatureField(
+      hotel.offer.price,
+      сard.querySelector(`.popup__text--price`),
+      (element) => {
+        element.textContent = `${hotel.offer.price}₽/ночь`;
+      }
+  );
+
+  renderFeatureField(
+      hotel.offer.type,
+      сard.querySelector(`.popup__type`),
+      (element) => {
+        element.textContent = hotelTypes[hotel.offer.type];
+      }
+  );
+
+  renderFeatureField(
+      hotel.offer.rooms && hotel.offer.guests,
+      сard.querySelector(`.popup__text--capacity`),
+      (element) => {
+        element.textContent = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
+      }
+  );
+
+  renderFeatureField(
+      hotel.offer.checkin && hotel.offer.checkout,
+      сard.querySelector(`.popup__text--time`),
+      (element) => {
+        element.textContent = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
+      }
+  );
+
+  renderFeatureField(
+      hotel.offer.description,
+      сard.querySelector(`.popup__description`),
+      (element) => {
+        element.textContent = hotel.offer.description;
+      }
+  );
+
+  renderFeatureField(
+      hotel.author.avatar,
+      сard.querySelector(`.popup__avatar`),
+      (element) => {
+        element.src = hotel.author.avatar;
+      }
+  );
+
+  renderElements(hotel.offer.photos, сard.querySelector(`.popup__photos`), renderPhoto);
+
+  renderElements(hotel.offer.features, сard.querySelector(`.popup__features`), renderFeature);
+
+  return сard;
 }
 
-renderPins(getHotels());
+function renderFeatureField(condition, element, cb) {
+  if (condition) {
+    return cb(element);
+  }
+  return element.remove();
+}
+
+function renderElements(elements, containerElement, renderElement) {
+  removeChildren(containerElement);
+  const fragment = document.createDocumentFragment();
+  elements.forEach((element) => {
+    fragment.appendChild(renderElement(element));
+  });
+  containerElement.appendChild(fragment);
+}
+
+
+function renderFeature(feature) {
+  const featureElement = document.createElement(`li`);
+  featureElement.classList.add(`popup__feature`, `popup__feature--${feature}`);
+  return featureElement;
+}
+
+function renderPhoto(img) {
+  const imgElement = document.createElement(`img`);
+  imgElement.classList.add(`popup__photo`);
+  imgElement.style.width = `40px`;
+  imgElement.style.height = `40px`;
+  imgElement.src = `${img}`;
+  return imgElement;
+}
+
+function removeChildren(parentElement) {
+  while (parentElement.firstChild) {
+    parentElement.firstChild.remove();
+  }
+}
+
+function renderCard(hotels) {
+  map.insertBefore(createСard(hotels[0]), filtersContainerElement);
+}
+
+renderCard(hotelsInfo);
