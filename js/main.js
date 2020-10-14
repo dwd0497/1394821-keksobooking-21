@@ -1,5 +1,8 @@
 "use strict";
 
+const leftMouseBtn = 0;
+const enter = `Enter`;
+
 const Hotels = {
   COUNT: 8,
   TYPE: [`palace`, `flat`, `house`, `bungalow`],
@@ -20,20 +23,27 @@ const Pin = {
   MAX_VERTICAL_COORD: 630
 };
 
+const MAIN_PIN_LEG_HEIGHT = 22;
+
 const map = document.querySelector(`.map`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
-const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
+const adformElement = document.querySelector(`.ad-form`);
+const adformElements = adformElement.querySelectorAll(`fieldset`);
+const adformAdressInput = adformElement.querySelector(`#address`);
+const adformCapacityInput = adformElement.querySelector(`#capacity`);
+const adformRoomNumberInput = adformElement.querySelector(`#room_number`);
+const filtersFormElement = document.querySelector(`.map__filters`);
+const mainPinElement = map.querySelector(`.map__pin--main`);
+// const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 const pinsElement = document.querySelector(`.map__pins`);
-const filtersContainerElement = document.querySelector(`.map__filters-container`);
+// const filtersContainerElement = document.querySelector(`.map__filters-container`);
 
-const hotelTypes = {
-  flat: `Квартира`,
-  bungalow: `Бунгало`,
-  palace: `Дворец`,
-  house: `Дом`
-};
-
-map.classList.remove(`map--faded`);
+// const hotelTypes = {
+//   flat: `Квартира`,
+//   bungalow: `Бунгало`,
+//   palace: `Дворец`,
+//   house: `Дом`
+// };
 
 function getHotels() {
   const hotels = [];
@@ -144,93 +154,90 @@ function createPin(hotel) {
 
 const hotelsInfo = getHotels();
 
-renderElements(hotelsInfo, pinsElement, createPin);
-
 // Тут код для отрисовки карточки отеля
 
-function createСard(hotel) {
-  const сard = cardTemplate.cloneNode(true);
+// function createСard(hotel) {
+//   const сard = cardTemplate.cloneNode(true);
 
-  renderFeatureField(
-      hotel.offer.title,
-      сard.querySelector(`.popup__title`),
-      (element) => {
-        element.textContent = hotel.offer.title;
-      }
-  );
+//   renderFeatureField(
+//     hotel.offer.title,
+//     сard.querySelector(`.popup__title`),
+//     (element) => {
+//       element.textContent = hotel.offer.title;
+//     }
+//   );
 
-  renderFeatureField(
-      hotel.offer.address,
-      сard.querySelector(`.popup__text--address`),
-      (element) => {
-        element.textContent = hotel.offer.address;
-      }
-  );
+//   renderFeatureField(
+//     hotel.offer.address,
+//     сard.querySelector(`.popup__text--address`),
+//     (element) => {
+//       element.textContent = hotel.offer.address;
+//     }
+//   );
 
-  renderFeatureField(
-      hotel.offer.price,
-      сard.querySelector(`.popup__text--price`),
-      (element) => {
-        element.textContent = `${hotel.offer.price}₽/ночь`;
-      }
-  );
+//   renderFeatureField(
+//     hotel.offer.price,
+//     сard.querySelector(`.popup__text--price`),
+//     (element) => {
+//       element.textContent = `${hotel.offer.price}₽/ночь`;
+//     }
+//   );
 
-  renderFeatureField(
-      hotel.offer.type,
-      сard.querySelector(`.popup__type`),
-      (element) => {
-        element.textContent = hotelTypes[hotel.offer.type];
-      }
-  );
+//   renderFeatureField(
+//     hotel.offer.type,
+//     сard.querySelector(`.popup__type`),
+//     (element) => {
+//       element.textContent = hotelTypes[hotel.offer.type];
+//     }
+//   );
 
-  renderFeatureField(
-      hotel.offer.rooms && hotel.offer.guests,
-      сard.querySelector(`.popup__text--capacity`),
-      (element) => {
-        element.textContent = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
-      }
-  );
+//   renderFeatureField(
+//     hotel.offer.rooms && hotel.offer.guests,
+//     сard.querySelector(`.popup__text--capacity`),
+//     (element) => {
+//       element.textContent = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
+//     }
+//   );
 
-  renderFeatureField(
-      hotel.offer.checkin && hotel.offer.checkout,
-      сard.querySelector(`.popup__text--time`),
-      (element) => {
-        element.textContent = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
-      }
-  );
+//   renderFeatureField(
+//     hotel.offer.checkin && hotel.offer.checkout,
+//     сard.querySelector(`.popup__text--time`),
+//     (element) => {
+//       element.textContent = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
+//     }
+//   );
 
-  renderFeatureField(
-      hotel.offer.description,
-      сard.querySelector(`.popup__description`),
-      (element) => {
-        element.textContent = hotel.offer.description;
-      }
-  );
+//   renderFeatureField(
+//     hotel.offer.description,
+//     сard.querySelector(`.popup__description`),
+//     (element) => {
+//       element.textContent = hotel.offer.description;
+//     }
+//   );
 
-  renderFeatureField(
-      hotel.author.avatar,
-      сard.querySelector(`.popup__avatar`),
-      (element) => {
-        element.src = hotel.author.avatar;
-      }
-  );
+//   renderFeatureField(
+//     hotel.author.avatar,
+//     сard.querySelector(`.popup__avatar`),
+//     (element) => {
+//       element.src = hotel.author.avatar;
+//     }
+//   );
+//   removeChildren(сard.querySelector(`.popup__photos`)); прищлось убрать из renderElements тк она затирает главынй пин
+//   renderElements(hotel.offer.photos, сard.querySelector(`.popup__photos`), renderPhoto);
+//   removeChildren(сard.querySelector(`.popup__features`));
+//   renderElements(hotel.offer.features, сard.querySelector(`.popup__features`), renderFeature);
 
-  renderElements(hotel.offer.photos, сard.querySelector(`.popup__photos`), renderPhoto);
+//   return сard;
+// }
 
-  renderElements(hotel.offer.features, сard.querySelector(`.popup__features`), renderFeature);
-
-  return сard;
-}
-
-function renderFeatureField(condition, element, cb) {
-  if (condition) {
-    return cb(element);
-  }
-  return element.remove();
-}
+// function renderFeatureField(condition, element, cb) {
+//   if (condition) {
+//     return cb(element);
+//   }
+//   return element.remove();
+// }
 
 function renderElements(elements, containerElement, renderElement) {
-  removeChildren(containerElement);
   const fragment = document.createDocumentFragment();
   elements.forEach((element) => {
     fragment.appendChild(renderElement(element));
@@ -239,29 +246,126 @@ function renderElements(elements, containerElement, renderElement) {
 }
 
 
-function renderFeature(feature) {
-  const featureElement = document.createElement(`li`);
-  featureElement.classList.add(`popup__feature`, `popup__feature--${feature}`);
-  return featureElement;
-}
+// function renderFeature(feature) {
+//   const featureElement = document.createElement(`li`);
+//   featureElement.classList.add(`popup__feature`, `popup__feature--${feature}`);
+//   return featureElement;
+// }
 
-function renderPhoto(img) {
-  const imgElement = document.createElement(`img`);
-  imgElement.classList.add(`popup__photo`);
-  imgElement.style.width = `40px`;
-  imgElement.style.height = `40px`;
-  imgElement.src = `${img}`;
-  return imgElement;
-}
+// function renderPhoto(img) {
+//   const imgElement = document.createElement(`img`);
+//   imgElement.classList.add(`popup__photo`);
+//   imgElement.style.width = `40px`;
+//   imgElement.style.height = `40px`;
+//   imgElement.src = `${img}`;
+//   return imgElement;
+// }
 
-function removeChildren(parentElement) {
-  while (parentElement.firstChild) {
-    parentElement.firstChild.remove();
+// function removeChildren(parentElement) {
+//   while (parentElement.firstChild) {
+//     parentElement.firstChild.remove();
+//   }
+// }
+
+// function renderCard(card) {
+//   map.insertBefore(createСard(card), filtersContainerElement);
+// }
+
+// renderCard(hotelsInfo[0]);
+
+
+// Тут код для 4-ого задания
+
+toggleFormElementsState(adformElements, true);
+toggleFormElementsState(filtersFormElement.children, true);
+fillAdresInput();
+
+changeMainpinEventsState(true);
+
+function toggleFormElementsState(formElements, isDisabled) {
+  for (let i = 0; i < formElements.length; i++) {
+    formElements[i].disabled = isDisabled;
   }
 }
 
-function renderCard(hotels) {
-  map.insertBefore(createСard(hotels[0]), filtersContainerElement);
+function onMainpinMousedown(evt) {
+  if (evt.button === leftMouseBtn) {
+    removeInactiveState();
+    fillAdresInput();
+    changeMainpinEventsState(false);
+  }
 }
 
-renderCard(hotelsInfo);
+function onMainpinKeydown(evt) {
+  if (evt.key === enter) {
+    removeInactiveState();
+    fillAdresInput();
+    changeMainpinEventsState(false);
+  }
+}
+
+function removeInactiveState() {
+  map.classList.remove(`map--faded`);
+  adformElement.classList.remove(`ad-form--disabled`);
+  toggleFormElementsState(adformElements, false);
+  toggleFormElementsState(filtersFormElement.children, false);
+  adformCapacityInput.addEventListener(`change`, onAdformInputCapacityChange);
+  renderElements(hotelsInfo, pinsElement, createPin); // поставил пока сюда чтобы eslint не ругался
+}
+
+
+function changeMainpinEventsState(type) {
+  const method = type ? `addEventListener` : `removeEventListener`;
+  mainPinElement[method](`mousedown`, onMainpinMousedown);
+  mainPinElement[method](`keydown`, onMainpinKeydown);
+}
+
+function fillAdresInput() {
+  adformAdressInput.value = getMainpinCoords();
+}
+
+function getMainpinCoords() {
+  const pinCoords = `${getMainpinXCoord()}, ${getMainpinYCoord()}`;
+  return pinCoords;
+}
+
+function getMainpinYCoord() {
+  if (map.classList.contains(`map--faded`)) {
+    return Math.round(parseInt(mainPinElement.style.top, 10) + mainPinElement.offsetHeight / 2);
+  }
+  return Math.round(parseInt(mainPinElement.style.top, 10) + mainPinElement.offsetHeight + MAIN_PIN_LEG_HEIGHT);
+}
+
+function getMainpinXCoord() {
+  return Math.round(parseInt(mainPinElement.style.left, 10) + mainPinElement.offsetWidth / 2);
+}
+
+function onAdformInputCapacityChange() {
+  if (
+    adformRoomNumberInput.value === `1` &&
+    adformCapacityInput.value !== `1`
+  ) {
+    adformCapacityInput.setCustomValidity(`Однокомнатные отели только для одного гостя`);
+  } else if (
+    adformRoomNumberInput.value === `2` &&
+    adformCapacityInput.value !== `1` &&
+    adformCapacityInput.value !== `2`
+  ) {
+    adformCapacityInput.setCustomValidity(`Двухкомнатные отели только для одного или двух гостей`);
+  } else if (
+    adformRoomNumberInput.value === `3` &&
+    adformCapacityInput.value !== `1` &&
+    adformCapacityInput.value !== `2` &&
+    adformCapacityInput.value !== `3`
+  ) {
+    adformCapacityInput.setCustomValidity(`Трехкомнатные отели только для одного, двух или трех гостей`);
+  } else if (
+    adformRoomNumberInput.value === `100` &&
+    adformCapacityInput.value !== `0`
+  ) {
+    adformCapacityInput.setCustomValidity(`Стокомнатные отели только не для гостей`);
+  } else {
+    adformCapacityInput.setCustomValidity(``);
+  }
+  adformCapacityInput.reportValidity();
+}
