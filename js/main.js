@@ -164,67 +164,67 @@ function createСard(hotel) {
   const сard = cardTemplate.cloneNode(true);
 
   renderFeatureField(
-    hotel.offer.title,
-    сard.querySelector(`.popup__title`),
-    (element) => {
-      element.textContent = hotel.offer.title;
-    }
+      hotel.offer.title,
+      сard.querySelector(`.popup__title`),
+      (element) => {
+        element.textContent = hotel.offer.title;
+      }
   );
 
   renderFeatureField(
-    hotel.offer.address,
-    сard.querySelector(`.popup__text--address`),
-    (element) => {
-      element.textContent = hotel.offer.address;
-    }
+      hotel.offer.address,
+      сard.querySelector(`.popup__text--address`),
+      (element) => {
+        element.textContent = hotel.offer.address;
+      }
   );
 
   renderFeatureField(
-    hotel.offer.price,
-    сard.querySelector(`.popup__text--price`),
-    (element) => {
-      element.textContent = `${hotel.offer.price}₽/ночь`;
-    }
+      hotel.offer.price,
+      сard.querySelector(`.popup__text--price`),
+      (element) => {
+        element.textContent = `${hotel.offer.price}₽/ночь`;
+      }
   );
 
   renderFeatureField(
-    hotel.offer.type,
-    сard.querySelector(`.popup__type`),
-    (element) => {
-      element.textContent = hotelTypes[hotel.offer.type];
-    }
+      hotel.offer.type,
+      сard.querySelector(`.popup__type`),
+      (element) => {
+        element.textContent = hotelTypes[hotel.offer.type];
+      }
   );
 
   renderFeatureField(
-    hotel.offer.rooms && hotel.offer.guests,
-    сard.querySelector(`.popup__text--capacity`),
-    (element) => {
-      element.textContent = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
-    }
+      hotel.offer.rooms && hotel.offer.guests,
+      сard.querySelector(`.popup__text--capacity`),
+      (element) => {
+        element.textContent = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
+      }
   );
 
   renderFeatureField(
-    hotel.offer.checkin && hotel.offer.checkout,
-    сard.querySelector(`.popup__text--time`),
-    (element) => {
-      element.textContent = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
-    }
+      hotel.offer.checkin && hotel.offer.checkout,
+      сard.querySelector(`.popup__text--time`),
+      (element) => {
+        element.textContent = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
+      }
   );
 
   renderFeatureField(
-    hotel.offer.description,
-    сard.querySelector(`.popup__description`),
-    (element) => {
-      element.textContent = hotel.offer.description;
-    }
+      hotel.offer.description,
+      сard.querySelector(`.popup__description`),
+      (element) => {
+        element.textContent = hotel.offer.description;
+      }
   );
 
   renderFeatureField(
-    hotel.author.avatar,
-    сard.querySelector(`.popup__avatar`),
-    (element) => {
-      element.src = hotel.author.avatar;
-    }
+      hotel.author.avatar,
+      сard.querySelector(`.popup__avatar`),
+      (element) => {
+        element.src = hotel.author.avatar;
+      }
   );
   clearParentAndRenderElements(hotel.offer.photos, сard.querySelector(`.popup__photos`), renderPhoto);
   clearParentAndRenderElements(hotel.offer.features, сard.querySelector(`.popup__features`), renderFeature);
@@ -325,7 +325,6 @@ function removeInactiveState() {
   map.addEventListener(`keydown`, onMapPinKeydown);
 }
 
-
 function changeMainpinEventsState(type) {
   const method = type ? `addEventListener` : `removeEventListener`;
   mainPinElement[method](`mousedown`, onMainpinMousedown);
@@ -377,9 +376,7 @@ function onMapPinClick(evt) {
       if (target === item) {
         removeOldCard();
         renderCard(hotelsInfo[i]);
-        const popupCloseBtn = map.querySelector(`.popup__close`);
-        popupCloseBtn.addEventListener(`click`, onPopupCloseBtnClick);
-        document.addEventListener(`keydown`, onEscPress);
+        changePopupEventsState(true);
       }
     });
   }
@@ -388,17 +385,13 @@ function onMapPinClick(evt) {
 function onEscPress(evt) {
   if (evt.key === Escape) {
     removeOldCard();
-    const popupCloseBtn = map.querySelector(`.popup__close`);
-    popupCloseBtn.removeEventListener(`click`, onPopupCloseBtnClick);
-    document.removeEventListener(`keydown`, onEscPress);
+    changePopupEventsState(false);
   }
 }
 
 function onPopupCloseBtnClick() {
   removeOldCard();
-  const popupCloseBtn = map.querySelector(`.popup__close`);
-  popupCloseBtn.removeEventListener(`click`, onPopupCloseBtnClick);
-  document.removeEventListener(`keydown`, onEscPress);
+  changePopupEventsState(false);
 }
 
 function onMapPinKeydown(evt) {
@@ -414,6 +407,14 @@ function removeOldCard() {
   }
 }
 
+function changePopupEventsState(type) {
+  const method = type ? `addEventListener` : `removeEventListener`;
+  const popupCloseBtn = map.querySelector(`.popup__close`);
+  if (popupCloseBtn) {
+    popupCloseBtn[method](`click`, onPopupCloseBtnClick);
+    document[method](`keydown`, onEscPress);
+  }
+}
 
 // продолжение валидации
 
