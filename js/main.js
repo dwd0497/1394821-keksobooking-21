@@ -2,6 +2,7 @@
 
 const LeftMouseBtn = 0;
 const Enter = `Enter`;
+const Escape = `Escape`;
 
 const Hotels = {
   COUNT: 8,
@@ -31,18 +32,22 @@ const adformElement = document.querySelector(`.ad-form`);
 const adformAdressInput = adformElement.querySelector(`#address`);
 const adformCapacityInput = adformElement.querySelector(`#capacity`);
 const adformRoomNumberInput = adformElement.querySelector(`#room_number`);
+const adformTypeInput = adformElement.querySelector(`#type`);
+const adformPriceInput = adformElement.querySelector(`#price`);
+const adformTimeinInput = adformElement.querySelector(`#timein`);
+const adformTimeoutInput = adformElement.querySelector(`#timeout`);
 const filtersFormElement = document.querySelector(`.map__filters`);
 const mainPinElement = map.querySelector(`.map__pin--main`);
-// const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
+const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 const pinsElement = document.querySelector(`.map__pins`);
-// const filtersContainerElement = document.querySelector(`.map__filters-container`);
+const filtersContainerElement = document.querySelector(`.map__filters-container`);
 
-// const hotelTypes = {
-//   flat: `Квартира`,
-//   bungalow: `Бунгало`,
-//   palace: `Дворец`,
-//   house: `Дом`
-// };
+const hotelTypes = {
+  flat: `Квартира`,
+  bungalow: `Бунгало`,
+  palace: `Дворец`,
+  house: `Дом`
+};
 
 function getHotels() {
   const hotels = [];
@@ -155,89 +160,89 @@ const hotelsInfo = getHotels();
 
 // Тут код для отрисовки карточки отеля
 
-// function createСard(hotel) {
-//   const сard = cardTemplate.cloneNode(true);
+function createСard(hotel) {
+  const сard = cardTemplate.cloneNode(true);
 
-//   renderFeatureField(
-//     hotel.offer.title,
-//     сard.querySelector(`.popup__title`),
-//     (element) => {
-//       element.textContent = hotel.offer.title;
-//     }
-//   );
+  renderFeatureField(
+    hotel.offer.title,
+    сard.querySelector(`.popup__title`),
+    (element) => {
+      element.textContent = hotel.offer.title;
+    }
+  );
 
-//   renderFeatureField(
-//     hotel.offer.address,
-//     сard.querySelector(`.popup__text--address`),
-//     (element) => {
-//       element.textContent = hotel.offer.address;
-//     }
-//   );
+  renderFeatureField(
+    hotel.offer.address,
+    сard.querySelector(`.popup__text--address`),
+    (element) => {
+      element.textContent = hotel.offer.address;
+    }
+  );
 
-//   renderFeatureField(
-//     hotel.offer.price,
-//     сard.querySelector(`.popup__text--price`),
-//     (element) => {
-//       element.textContent = `${hotel.offer.price}₽/ночь`;
-//     }
-//   );
+  renderFeatureField(
+    hotel.offer.price,
+    сard.querySelector(`.popup__text--price`),
+    (element) => {
+      element.textContent = `${hotel.offer.price}₽/ночь`;
+    }
+  );
 
-//   renderFeatureField(
-//     hotel.offer.type,
-//     сard.querySelector(`.popup__type`),
-//     (element) => {
-//       element.textContent = hotelTypes[hotel.offer.type];
-//     }
-//   );
+  renderFeatureField(
+    hotel.offer.type,
+    сard.querySelector(`.popup__type`),
+    (element) => {
+      element.textContent = hotelTypes[hotel.offer.type];
+    }
+  );
 
-//   renderFeatureField(
-//     hotel.offer.rooms && hotel.offer.guests,
-//     сard.querySelector(`.popup__text--capacity`),
-//     (element) => {
-//       element.textContent = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
-//     }
-//   );
+  renderFeatureField(
+    hotel.offer.rooms && hotel.offer.guests,
+    сard.querySelector(`.popup__text--capacity`),
+    (element) => {
+      element.textContent = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
+    }
+  );
 
-//   renderFeatureField(
-//     hotel.offer.checkin && hotel.offer.checkout,
-//     сard.querySelector(`.popup__text--time`),
-//     (element) => {
-//       element.textContent = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
-//     }
-//   );
+  renderFeatureField(
+    hotel.offer.checkin && hotel.offer.checkout,
+    сard.querySelector(`.popup__text--time`),
+    (element) => {
+      element.textContent = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
+    }
+  );
 
-//   renderFeatureField(
-//     hotel.offer.description,
-//     сard.querySelector(`.popup__description`),
-//     (element) => {
-//       element.textContent = hotel.offer.description;
-//     }
-//   );
+  renderFeatureField(
+    hotel.offer.description,
+    сard.querySelector(`.popup__description`),
+    (element) => {
+      element.textContent = hotel.offer.description;
+    }
+  );
 
-//   renderFeatureField(
-//     hotel.author.avatar,
-//     сard.querySelector(`.popup__avatar`),
-//     (element) => {
-//       element.src = hotel.author.avatar;
-//     }
-//   );
-//   clearParentAndRenderElements(hotel.offer.photos, сard.querySelector(`.popup__photos`), renderPhoto);
-//   clearParentAndRenderElements(hotel.offer.features, сard.querySelector(`.popup__features`), renderFeature);
+  renderFeatureField(
+    hotel.author.avatar,
+    сard.querySelector(`.popup__avatar`),
+    (element) => {
+      element.src = hotel.author.avatar;
+    }
+  );
+  clearParentAndRenderElements(hotel.offer.photos, сard.querySelector(`.popup__photos`), renderPhoto);
+  clearParentAndRenderElements(hotel.offer.features, сard.querySelector(`.popup__features`), renderFeature);
 
-//   return сard;
-// }
+  return сard;
+}
 
-// function renderFeatureField(condition, element, cb) {
-//   if (condition) {
-//     return cb(element);
-//   }
-//   return element.remove();
-// }
+function renderFeatureField(condition, element, cb) {
+  if (condition) {
+    return cb(element);
+  }
+  return element.remove();
+}
 
-// function clearParentAndRenderElements(elements, containerElement, renderElement) {
-//   removeChildren(containerElement);
-//   renderElements(elements, containerElement, renderElement);
-// }
+function clearParentAndRenderElements(elements, containerElement, renderElement) {
+  removeChildren(containerElement);
+  renderElements(elements, containerElement, renderElement);
+}
 
 function renderElements(elements, containerElement, renderElement) {
   const fragment = document.createDocumentFragment();
@@ -248,32 +253,30 @@ function renderElements(elements, containerElement, renderElement) {
 }
 
 
-// function renderFeature(feature) {
-//   const featureElement = document.createElement(`li`);
-//   featureElement.classList.add(`popup__feature`, `popup__feature--${feature}`);
-//   return featureElement;
-// }
+function renderFeature(feature) {
+  const featureElement = document.createElement(`li`);
+  featureElement.classList.add(`popup__feature`, `popup__feature--${feature}`);
+  return featureElement;
+}
 
-// function renderPhoto(img) {
-//   const imgElement = document.createElement(`img`);
-//   imgElement.classList.add(`popup__photo`);
-//   imgElement.style.width = `40px`;
-//   imgElement.style.height = `40px`;
-//   imgElement.src = `${img}`;
-//   return imgElement;
-// }
+function renderPhoto(img) {
+  const imgElement = document.createElement(`img`);
+  imgElement.classList.add(`popup__photo`);
+  imgElement.style.width = `40px`;
+  imgElement.style.height = `40px`;
+  imgElement.src = `${img}`;
+  return imgElement;
+}
 
-// function removeChildren(parentElement) {
-//   while (parentElement.firstChild) {
-//     parentElement.firstChild.remove();
-//   }
-// }
+function removeChildren(parentElement) {
+  while (parentElement.firstChild) {
+    parentElement.firstChild.remove();
+  }
+}
 
-// function renderCard(card) {
-//   map.insertBefore(createСard(card), filtersContainerElement);
-// }
-
-// renderCard(hotelsInfo[0]);
+function renderCard(card) {
+  map.insertBefore(createСard(card), filtersContainerElement);
+}
 
 
 // Тут код для 4-ого задания
@@ -314,7 +317,12 @@ function removeInactiveState() {
   toggleFormElementsState(adformElement.children, false);
   toggleFormElementsState(filtersFormElement.children, false);
   adformCapacityInput.addEventListener(`change`, onAdformInputCapacityChange);
-  renderElements(hotelsInfo, pinsElement, createPin); // поставил пока сюда чтобы eslint не ругался
+  adformTypeInput.addEventListener(`change`, onTupeInputChange);
+  adformTimeinInput.addEventListener(`change`, onTimeinInputChange);
+  adformTimeoutInput.addEventListener(`change`, onTimeoutInputChange);
+  renderElements(hotelsInfo, pinsElement, createPin);
+  map.addEventListener(`click`, onMapPinClick);
+  map.addEventListener(`keydown`, onMapPinKeydown);
 }
 
 
@@ -358,3 +366,75 @@ function onAdformInputCapacityChange() {
   }
   adformCapacityInput.reportValidity();
 }
+
+// тут код показа карточки отеля
+
+function onMapPinClick(evt) {
+  const mapPinElements = map.querySelectorAll(`.map__pin:not(.map__pin--main)`);
+  const target = evt.target;
+  if (target && target.classList.contains(`map__pin`)) {
+    mapPinElements.forEach((item, i) => {
+      if (target === item) {
+        removeOldCard();
+        renderCard(hotelsInfo[i]);
+        const popupCloseBtn = map.querySelector(`.popup__close`);
+        popupCloseBtn.addEventListener(`click`, onPopupCloseBtnClick);
+        document.addEventListener(`keydown`, onEscPress);
+      }
+    });
+  }
+}
+
+function onEscPress(evt) {
+  if (evt.key === Escape) {
+    removeOldCard();
+    const popupCloseBtn = map.querySelector(`.popup__close`);
+    popupCloseBtn.removeEventListener(`click`, onPopupCloseBtnClick);
+    document.removeEventListener(`keydown`, onEscPress);
+  }
+}
+
+function onPopupCloseBtnClick() {
+  removeOldCard();
+  const popupCloseBtn = map.querySelector(`.popup__close`);
+  popupCloseBtn.removeEventListener(`click`, onPopupCloseBtnClick);
+  document.removeEventListener(`keydown`, onEscPress);
+}
+
+function onMapPinKeydown(evt) {
+  if (evt.key === Enter) {
+    onMapPinClick(evt);
+  }
+}
+
+function removeOldCard() {
+  const oldCard = map.querySelector(`.map__card`);
+  if (oldCard) {
+    oldCard.remove();
+  }
+}
+
+
+// продолжение валидации
+
+
+function onTupeInputChange() {
+  if (adformTypeInput.value === `bungalow`) {
+    adformPriceInput.min = 0;
+  } else if (adformTypeInput.value === `flat`) {
+    adformPriceInput.min = 1000;
+  } else if (adformTypeInput.value === `house`) {
+    adformPriceInput.min = 5000;
+  } else if (adformTypeInput.value === `palace`) {
+    adformPriceInput.min = 10000;
+  }
+}
+
+function onTimeinInputChange() {
+  adformTimeoutInput.value = adformTimeinInput.value;
+}
+
+function onTimeoutInputChange() {
+  adformTimeinInput.value = adformTimeoutInput.value;
+}
+
