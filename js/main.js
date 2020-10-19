@@ -1,7 +1,7 @@
 "use strict";
 
-const leftMouseBtn = 0;
-const enter = `Enter`;
+const LeftMouseBtn = 0;
+const Enter = `Enter`;
 
 const Hotels = {
   COUNT: 8,
@@ -28,7 +28,6 @@ const MAIN_PIN_LEG_HEIGHT = 22;
 const map = document.querySelector(`.map`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 const adformElement = document.querySelector(`.ad-form`);
-const adformElements = adformElement.querySelectorAll(`fieldset`);
 const adformAdressInput = adformElement.querySelector(`#address`);
 const adformCapacityInput = adformElement.querySelector(`#capacity`);
 const adformRoomNumberInput = adformElement.querySelector(`#room_number`);
@@ -276,20 +275,22 @@ function renderElements(elements, containerElement, renderElement) {
 
 // Тут код для 4-ого задания
 
-toggleFormElementsState(adformElements, true);
+const forEach = (elements, cb) => Array.prototype.forEach.call(elements, cb);
+
+toggleFormElementsState(adformElement.children, true);
 toggleFormElementsState(filtersFormElement.children, true);
 fillAdresInput();
 
 changeMainpinEventsState(true);
 
 function toggleFormElementsState(formElements, isDisabled) {
-  for (let i = 0; i < formElements.length; i++) {
-    formElements[i].disabled = isDisabled;
-  }
+  forEach(formElements, function (element) {
+    element.disabled = isDisabled;
+  });
 }
 
 function onMainpinMousedown(evt) {
-  if (evt.button === leftMouseBtn) {
+  if (evt.button === LeftMouseBtn) {
     removeInactiveState();
     fillAdresInput();
     changeMainpinEventsState(false);
@@ -297,7 +298,7 @@ function onMainpinMousedown(evt) {
 }
 
 function onMainpinKeydown(evt) {
-  if (evt.key === enter) {
+  if (evt.key === Enter) {
     removeInactiveState();
     fillAdresInput();
     changeMainpinEventsState(false);
@@ -307,7 +308,7 @@ function onMainpinKeydown(evt) {
 function removeInactiveState() {
   map.classList.remove(`map--faded`);
   adformElement.classList.remove(`ad-form--disabled`);
-  toggleFormElementsState(adformElements, false);
+  toggleFormElementsState(adformElement.children, false);
   toggleFormElementsState(filtersFormElement.children, false);
   adformCapacityInput.addEventListener(`change`, onAdformInputCapacityChange);
   renderElements(hotelsInfo, pinsElement, createPin); // поставил пока сюда чтобы eslint не ругался
@@ -325,8 +326,7 @@ function fillAdresInput() {
 }
 
 function getMainpinCoords() {
-  const pinCoords = `${getMainpinXCoord()}, ${getMainpinYCoord()}`;
-  return pinCoords;
+  return `${getMainpinXCoord()}, ${getMainpinYCoord()}`;
 }
 
 function getMainpinYCoord() {
@@ -341,29 +341,15 @@ function getMainpinXCoord() {
 }
 
 function onAdformInputCapacityChange() {
-  if (
-    adformRoomNumberInput.value === `1` &&
-    adformCapacityInput.value !== `1`
-  ) {
-    adformCapacityInput.setCustomValidity(`Однокомнатные отели только для одного гостя`);
-  } else if (
-    adformRoomNumberInput.value === `2` &&
-    adformCapacityInput.value !== `1` &&
-    adformCapacityInput.value !== `2`
-  ) {
-    adformCapacityInput.setCustomValidity(`Двухкомнатные отели только для одного или двух гостей`);
-  } else if (
-    adformRoomNumberInput.value === `3` &&
-    adformCapacityInput.value !== `1` &&
-    adformCapacityInput.value !== `2` &&
-    adformCapacityInput.value !== `3`
-  ) {
-    adformCapacityInput.setCustomValidity(`Трехкомнатные отели только для одного, двух или трех гостей`);
-  } else if (
-    adformRoomNumberInput.value === `100` &&
-    adformCapacityInput.value !== `0`
-  ) {
-    adformCapacityInput.setCustomValidity(`Стокомнатные отели только не для гостей`);
+  const guests = +adformCapacityInput.value;
+  const rooms = +adformRoomNumberInput.value;
+
+  if (rooms === 100 && guests !== 0) {
+    adformCapacityInput.setCustomValidity(`100 комнат не для гостей`);
+  } else if (rooms < guests && guests !== 0) {
+    adformCapacityInput.setCustomValidity(`Количество мест не может превышать количество комнат`);
+  } else if (rooms !== 100 && guests === 0) {
+    adformCapacityInput.setCustomValidity(`Не для гостей только 100 комнатные номера`);
   } else {
     adformCapacityInput.setCustomValidity(``);
   }
