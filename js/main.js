@@ -221,10 +221,8 @@ const hotelsInfo = getHotels();
 //       element.src = hotel.author.avatar;
 //     }
 //   );
-//   removeChildren(сard.querySelector(`.popup__photos`)); прищлось убрать из renderElements тк она затирает главынй пин
-//   renderElements(hotel.offer.photos, сard.querySelector(`.popup__photos`), renderPhoto);
-//   removeChildren(сard.querySelector(`.popup__features`));
-//   renderElements(hotel.offer.features, сard.querySelector(`.popup__features`), renderFeature);
+//   clearParentAndRenderElements(hotel.offer.photos, сard.querySelector(`.popup__photos`), renderPhoto);
+//   clearParentAndRenderElements(hotel.offer.features, сard.querySelector(`.popup__features`), renderFeature);
 
 //   return сard;
 // }
@@ -234,6 +232,11 @@ const hotelsInfo = getHotels();
 //     return cb(element);
 //   }
 //   return element.remove();
+// }
+
+// function clearParentAndRenderElements(elements, containerElement, renderElement) {
+//   removeChildren(containerElement);
+//   renderElements(elements, containerElement, renderElement);
 // }
 
 function renderElements(elements, containerElement, renderElement) {
