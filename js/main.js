@@ -1,7 +1,10 @@
 "use strict";
 
-const LeftMouseBtn = 0;
-const Enter = `Enter`;
+const СontrolButtons = {
+  LEFTMOUSEBTN: 0,
+  ENTER: `Enter`,
+  ESCAPE: `Escape`,
+};
 
 const Hotels = {
   COUNT: 8,
@@ -23,6 +26,11 @@ const Pin = {
   MAX_VERTICAL_COORD: 630
 };
 
+const HotelImgs = {
+  WIDTH: 45,
+  HEIGHT: 40
+};
+
 const MAIN_PIN_LEG_HEIGHT = 22;
 
 const map = document.querySelector(`.map`);
@@ -31,29 +39,39 @@ const adformElement = document.querySelector(`.ad-form`);
 const adformAdressInput = adformElement.querySelector(`#address`);
 const adformCapacityInput = adformElement.querySelector(`#capacity`);
 const adformRoomNumberInput = adformElement.querySelector(`#room_number`);
+const adformTypeInput = adformElement.querySelector(`#type`);
+const adformPriceInput = adformElement.querySelector(`#price`);
+const adformTimeinInput = adformElement.querySelector(`#timein`);
+const adformTimeoutInput = adformElement.querySelector(`#timeout`);
 const filtersFormElement = document.querySelector(`.map__filters`);
 const mainPinElement = map.querySelector(`.map__pin--main`);
-// const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
+const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 const pinsElement = document.querySelector(`.map__pins`);
-// const filtersContainerElement = document.querySelector(`.map__filters-container`);
+const filtersContainerElement = document.querySelector(`.map__filters-container`);
 
-// const hotelTypes = {
-//   flat: `Квартира`,
-//   bungalow: `Бунгало`,
-//   palace: `Дворец`,
-//   house: `Дом`
-// };
+const hotelTypes = {
+  flat: `Квартира`,
+  bungalow: `Бунгало`,
+  palace: `Дворец`,
+  house: `Дом`
+};
 
-function getHotels() {
+const minPrices = {
+  bungalow: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
+};
+
+const getHotels = () => {
   const hotels = [];
   for (let i = 1; i <= Hotels.COUNT; i++) {
     hotels.push(getHotel(i));
   }
   return hotels;
-}
+};
 
-
-function getHotel(hotelNumber) {
+const getHotel = (hotelNumber) => {
   const hotel = {
     author: {
       avatar: `img/avatars/user0${hotelNumber}.png`
@@ -77,15 +95,15 @@ function getHotel(hotelNumber) {
   };
   hotel.offer.address = `${hotel.location.x}, ${hotel.location.y}`;
   return hotel;
-}
+};
 
-function getRandomIntInclusive(min, max) {
+const getRandomIntInclusive = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min);
-}
+};
 
-function getHotelCheckin() {
+const getHotelCheckin = () => {
   const randomNum = getRandomIntInclusive(1, 3);
   if (randomNum === 1) {
     return Hotels.CHECKIN[0];
@@ -94,9 +112,9 @@ function getHotelCheckin() {
   } else {
     return Hotels.CHECKIN[2];
   }
-}
+};
 
-function getHotelCheckout() {
+const getHotelCheckout = () => {
   const randomNum = getRandomIntInclusive(1, 3);
   if (randomNum === 1) {
     return Hotels.CHECKOUT[0];
@@ -105,11 +123,11 @@ function getHotelCheckout() {
   } else {
     return Hotels.CHECKOUT[2];
   }
-}
+};
 
 // Функция условно задает тип снимаемого помещения, в зависимости от порядкового номера помещения в массиве
 
-function getRandomHotelType(hotelNumber) {
+const getRandomHotelType = (hotelNumber) => {
   if (hotelNumber % 4 === 0) {
     return Hotels.TYPE[0];
   } else if (hotelNumber % 3 === 0) {
@@ -119,231 +137,235 @@ function getRandomHotelType(hotelNumber) {
   } else {
     return Hotels.TYPE[3];
   }
-}
+};
 
-function getRandomSlice(elements) {
+const getRandomSlice = (elements) => {
   return elements.slice(getRandomIntInclusive(0, elements.length - 1));
-}
+};
 
-function getHotelLocationY() {
+const getHotelLocationY = () => {
   return getRandomIntInclusive(Pin.MIN_VERTICAL_COORD, Pin.MAX_VERTICAL_COORD);
-}
+};
 
-function getHotelLocationX() {
+const getHotelLocationX = () => {
   return getRandomIntInclusive(0, getMapWidth());
-}
+};
 
-function getMapWidth() {
+const getMapWidth = () => {
   return map.offsetWidth;
-}
+};
 
-function movePinTo(pin, location) {
+const movePinTo = (pin, location) => {
   pin.style.top = `${location.y - Pin.HEIGHT}px`;
   pin.style.left = `${location.x - Pin.WIDTH / 2}px`;
-}
+};
 
-function createPin(hotel) {
+const createPin = (hotel, i) => {
   const pin = pinTemplate.cloneNode(true);
   movePinTo(pin, hotel.location);
   const pinImg = pin.querySelector(`img`);
   pinImg.src = `${hotel.author.avatar}`;
   pinImg.alt = `${hotel.offer.title}`;
+  pin.value = i;
+
+  pin.addEventListener(`click`, onMapPinClick);
+
   return pin;
-}
+};
 
 const hotelsInfo = getHotels();
 
 // Тут код для отрисовки карточки отеля
 
-// function createСard(hotel) {
-//   const сard = cardTemplate.cloneNode(true);
+const createСard = (hotel) => {
+  const сard = cardTemplate.cloneNode(true);
 
-//   renderFeatureField(
-//     hotel.offer.title,
-//     сard.querySelector(`.popup__title`),
-//     (element) => {
-//       element.textContent = hotel.offer.title;
-//     }
-//   );
+  renderFeatureField(
+      hotel.offer.title,
+      сard.querySelector(`.popup__title`),
+      (element) => {
+        element.textContent = hotel.offer.title;
+      }
+  );
 
-//   renderFeatureField(
-//     hotel.offer.address,
-//     сard.querySelector(`.popup__text--address`),
-//     (element) => {
-//       element.textContent = hotel.offer.address;
-//     }
-//   );
+  renderFeatureField(
+      hotel.offer.address,
+      сard.querySelector(`.popup__text--address`),
+      (element) => {
+        element.textContent = hotel.offer.address;
+      }
+  );
 
-//   renderFeatureField(
-//     hotel.offer.price,
-//     сard.querySelector(`.popup__text--price`),
-//     (element) => {
-//       element.textContent = `${hotel.offer.price}₽/ночь`;
-//     }
-//   );
+  renderFeatureField(
+      hotel.offer.price,
+      сard.querySelector(`.popup__text--price`),
+      (element) => {
+        element.textContent = `${hotel.offer.price}₽/ночь`;
+      }
+  );
 
-//   renderFeatureField(
-//     hotel.offer.type,
-//     сard.querySelector(`.popup__type`),
-//     (element) => {
-//       element.textContent = hotelTypes[hotel.offer.type];
-//     }
-//   );
+  renderFeatureField(
+      hotel.offer.type,
+      сard.querySelector(`.popup__type`),
+      (element) => {
+        element.textContent = hotelTypes[hotel.offer.type];
+      }
+  );
 
-//   renderFeatureField(
-//     hotel.offer.rooms && hotel.offer.guests,
-//     сard.querySelector(`.popup__text--capacity`),
-//     (element) => {
-//       element.textContent = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
-//     }
-//   );
+  renderFeatureField(
+      hotel.offer.rooms && hotel.offer.guests,
+      сard.querySelector(`.popup__text--capacity`),
+      (element) => {
+        element.textContent = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
+      }
+  );
 
-//   renderFeatureField(
-//     hotel.offer.checkin && hotel.offer.checkout,
-//     сard.querySelector(`.popup__text--time`),
-//     (element) => {
-//       element.textContent = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
-//     }
-//   );
+  renderFeatureField(
+      hotel.offer.checkin && hotel.offer.checkout,
+      сard.querySelector(`.popup__text--time`),
+      (element) => {
+        element.textContent = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
+      }
+  );
 
-//   renderFeatureField(
-//     hotel.offer.description,
-//     сard.querySelector(`.popup__description`),
-//     (element) => {
-//       element.textContent = hotel.offer.description;
-//     }
-//   );
+  renderFeatureField(
+      hotel.offer.description,
+      сard.querySelector(`.popup__description`),
+      (element) => {
+        element.textContent = hotel.offer.description;
+      }
+  );
 
-//   renderFeatureField(
-//     hotel.author.avatar,
-//     сard.querySelector(`.popup__avatar`),
-//     (element) => {
-//       element.src = hotel.author.avatar;
-//     }
-//   );
-//   clearParentAndRenderElements(hotel.offer.photos, сard.querySelector(`.popup__photos`), renderPhoto);
-//   clearParentAndRenderElements(hotel.offer.features, сard.querySelector(`.popup__features`), renderFeature);
+  renderFeatureField(
+      hotel.author.avatar,
+      сard.querySelector(`.popup__avatar`),
+      (element) => {
+        element.src = hotel.author.avatar;
+      }
+  );
+  clearParentAndRenderElements(hotel.offer.photos, сard.querySelector(`.popup__photos`), renderPhoto);
+  clearParentAndRenderElements(hotel.offer.features, сard.querySelector(`.popup__features`), renderFeature);
 
-//   return сard;
-// }
+  return сard;
+};
 
-// function renderFeatureField(condition, element, cb) {
-//   if (condition) {
-//     return cb(element);
-//   }
-//   return element.remove();
-// }
+const renderFeatureField = (condition, element, cb) => {
+  if (condition) {
+    return cb(element);
+  }
+  return element.remove();
+};
 
-// function clearParentAndRenderElements(elements, containerElement, renderElement) {
-//   removeChildren(containerElement);
-//   renderElements(elements, containerElement, renderElement);
-// }
+const clearParentAndRenderElements = (elements, containerElement, renderElement) => {
+  removeChildren(containerElement);
+  renderElements(elements, containerElement, renderElement);
+};
 
-function renderElements(elements, containerElement, renderElement) {
+const renderElements = (elements, containerElement, renderElement) => {
   const fragment = document.createDocumentFragment();
-  elements.forEach((element) => {
-    fragment.appendChild(renderElement(element));
+  elements.forEach((element, i) => {
+    fragment.appendChild(renderElement(element, i));
   });
   containerElement.appendChild(fragment);
-}
+};
 
+const renderFeature = (feature) => {
+  const featureElement = document.createElement(`li`);
+  featureElement.classList.add(`popup__feature`, `popup__feature--${feature}`);
+  return featureElement;
+};
 
-// function renderFeature(feature) {
-//   const featureElement = document.createElement(`li`);
-//   featureElement.classList.add(`popup__feature`, `popup__feature--${feature}`);
-//   return featureElement;
-// }
+const renderPhoto = (img) => {
+  const imgElement = document.createElement(`img`);
+  imgElement.classList.add(`popup__photo`);
+  imgElement.style.width = `${HotelImgs.WIDTH}px`;
+  imgElement.style.height = `${HotelImgs.HEIGHT}px`;
+  imgElement.src = `${img}`;
+  return imgElement;
+};
 
-// function renderPhoto(img) {
-//   const imgElement = document.createElement(`img`);
-//   imgElement.classList.add(`popup__photo`);
-//   imgElement.style.width = `40px`;
-//   imgElement.style.height = `40px`;
-//   imgElement.src = `${img}`;
-//   return imgElement;
-// }
+const removeChildren = (parentElement) => {
+  while (parentElement.firstChild) {
+    parentElement.firstChild.remove();
+  }
+};
 
-// function removeChildren(parentElement) {
-//   while (parentElement.firstChild) {
-//     parentElement.firstChild.remove();
-//   }
-// }
-
-// function renderCard(card) {
-//   map.insertBefore(createСard(card), filtersContainerElement);
-// }
-
-// renderCard(hotelsInfo[0]);
-
+const renderCard = (card) => {
+  map.insertBefore(createСard(card), filtersContainerElement);
+};
 
 // Тут код для 4-ого задания
 
 const forEach = (elements, cb) => Array.prototype.forEach.call(elements, cb);
 
-toggleFormElementsState(adformElement.children, true);
-toggleFormElementsState(filtersFormElement.children, true);
-fillAdresInput();
-
-changeMainpinEventsState(true);
-
-function toggleFormElementsState(formElements, isDisabled) {
+const toggleFormElementsState = (formElements, isDisabled) => {
   forEach(formElements, function (element) {
     element.disabled = isDisabled;
   });
-}
+};
 
-function onMainpinMousedown(evt) {
-  if (evt.button === LeftMouseBtn) {
+toggleFormElementsState(adformElement.children, true);
+toggleFormElementsState(filtersFormElement.children, true);
+
+const getMainpinXCoord = () => {
+  return Math.round(parseInt(mainPinElement.style.left, 10) + mainPinElement.offsetWidth / 2);
+};
+
+const getMainpinYCoord = () => {
+  if (map.classList.contains(`map--faded`)) {
+    return Math.round(parseInt(mainPinElement.style.top, 10) + mainPinElement.offsetHeight / 2);
+  }
+  return Math.round(parseInt(mainPinElement.style.top, 10) + mainPinElement.offsetHeight + MAIN_PIN_LEG_HEIGHT);
+};
+
+const getMainpinCoords = () => {
+  return `${getMainpinXCoord()}, ${getMainpinYCoord()}`;
+};
+
+const fillAdresInput = () => {
+  adformAdressInput.value = getMainpinCoords();
+};
+
+fillAdresInput();
+
+const onMainpinMousedown = (evt) => {
+  if (evt.button === СontrolButtons.LEFTMOUSEBTN) {
     removeInactiveState();
     fillAdresInput();
     changeMainpinEventsState(false);
   }
-}
+};
 
-function onMainpinKeydown(evt) {
-  if (evt.key === Enter) {
+const onMainpinKeydown = (evt) => {
+  if (evt.key === СontrolButtons.ENTER) {
     removeInactiveState();
     fillAdresInput();
     changeMainpinEventsState(false);
   }
-}
+};
 
-function removeInactiveState() {
+const changeMainpinEventsState = (type) => {
+  const method = type ? `addEventListener` : `removeEventListener`;
+  mainPinElement[method](`mousedown`, onMainpinMousedown);
+  mainPinElement[method](`keydown`, onMainpinKeydown);
+};
+
+changeMainpinEventsState(true);
+
+const removeInactiveState = () => {
   map.classList.remove(`map--faded`);
   adformElement.classList.remove(`ad-form--disabled`);
   toggleFormElementsState(adformElement.children, false);
   toggleFormElementsState(filtersFormElement.children, false);
   adformCapacityInput.addEventListener(`change`, onAdformInputCapacityChange);
-  renderElements(hotelsInfo, pinsElement, createPin); // поставил пока сюда чтобы eslint не ругался
-}
+  adformTypeInput.addEventListener(`change`, onTupeInputChange);
+  adformTimeinInput.addEventListener(`change`, onTimeinInputChange);
+  adformTimeoutInput.addEventListener(`change`, onTimeoutInputChange);
+  renderElements(hotelsInfo, pinsElement, createPin);
+  map.addEventListener(`keydown`, onMapPinKeydown);
+};
 
-
-function changeMainpinEventsState(type) {
-  const method = type ? `addEventListener` : `removeEventListener`;
-  mainPinElement[method](`mousedown`, onMainpinMousedown);
-  mainPinElement[method](`keydown`, onMainpinKeydown);
-}
-
-function fillAdresInput() {
-  adformAdressInput.value = getMainpinCoords();
-}
-
-function getMainpinCoords() {
-  return `${getMainpinXCoord()}, ${getMainpinYCoord()}`;
-}
-
-function getMainpinYCoord() {
-  if (map.classList.contains(`map--faded`)) {
-    return Math.round(parseInt(mainPinElement.style.top, 10) + mainPinElement.offsetHeight / 2);
-  }
-  return Math.round(parseInt(mainPinElement.style.top, 10) + mainPinElement.offsetHeight + MAIN_PIN_LEG_HEIGHT);
-}
-
-function getMainpinXCoord() {
-  return Math.round(parseInt(mainPinElement.style.left, 10) + mainPinElement.offsetWidth / 2);
-}
-
-function onAdformInputCapacityChange() {
+const onAdformInputCapacityChange = () => {
   const guests = +adformCapacityInput.value;
   const rooms = +adformRoomNumberInput.value;
 
@@ -357,4 +379,60 @@ function onAdformInputCapacityChange() {
     adformCapacityInput.setCustomValidity(``);
   }
   adformCapacityInput.reportValidity();
-}
+};
+
+// тут код показа карточки отеля
+
+const onMapPinClick = (evt) => {
+  removeOldCard();
+  renderCard(hotelsInfo[evt.currentTarget.value]);
+  changePopupEventsState(true);
+};
+
+const onEscPress = (evt) => {
+  if (evt.key === СontrolButtons.ESCAPE) {
+    removeOldCard();
+    changePopupEventsState(false);
+  }
+};
+
+const onPopupCloseBtnClick = () => {
+  removeOldCard();
+  changePopupEventsState(false);
+};
+
+const onMapPinKeydown = (evt) => {
+  if (evt.key === СontrolButtons.ENTER) {
+    onMapPinClick(evt);
+  }
+};
+
+const removeOldCard = () => {
+  const oldCard = map.querySelector(`.map__card`);
+  if (oldCard) {
+    oldCard.remove();
+  }
+};
+
+const changePopupEventsState = (type) => {
+  const method = type ? `addEventListener` : `removeEventListener`;
+  const popupCloseBtn = map.querySelector(`.popup__close`);
+  if (popupCloseBtn) {
+    popupCloseBtn[method](`click`, onPopupCloseBtnClick);
+    document[method](`keydown`, onEscPress);
+  }
+};
+
+// продолжение валидации
+
+const onTupeInputChange = () => {
+  adformPriceInput.min = minPrices[adformTypeInput.value];
+};
+
+const onTimeinInputChange = () => {
+  adformTimeoutInput.value = adformTimeinInput.value;
+};
+
+const onTimeoutInputChange = () => {
+  adformTimeinInput.value = adformTimeoutInput.value;
+};
