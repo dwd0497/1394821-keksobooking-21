@@ -71,7 +71,6 @@ const getHotels = () => {
   return hotels;
 };
 
-
 const getHotel = (hotelNumber) => {
   const hotel = {
     author: {
@@ -270,7 +269,6 @@ const renderElements = (elements, containerElement, renderElement) => {
   containerElement.appendChild(fragment);
 };
 
-
 const renderFeature = (feature) => {
   const featureElement = document.createElement(`li`);
   featureElement.classList.add(`popup__feature`, `popup__feature--${feature}`);
@@ -286,7 +284,6 @@ const renderPhoto = (img) => {
   return imgElement;
 };
 
-
 const removeChildren = (parentElement) => {
   while (parentElement.firstChild) {
     parentElement.firstChild.remove();
@@ -296,7 +293,6 @@ const removeChildren = (parentElement) => {
 const renderCard = (card) => {
   map.insertBefore(createСard(card), filtersContainerElement);
 };
-
 
 // Тут код для 4-ого задания
 
@@ -311,19 +307,26 @@ const toggleFormElementsState = (formElements, isDisabled) => {
 toggleFormElementsState(adformElement.children, true);
 toggleFormElementsState(filtersFormElement.children, true);
 
+const getMainpinXCoord = () => {
+  return Math.round(parseInt(mainPinElement.style.left, 10) + mainPinElement.offsetWidth / 2);
+};
+
+const getMainpinYCoord = () => {
+  if (map.classList.contains(`map--faded`)) {
+    return Math.round(parseInt(mainPinElement.style.top, 10) + mainPinElement.offsetHeight / 2);
+  }
+  return Math.round(parseInt(mainPinElement.style.top, 10) + mainPinElement.offsetHeight + MAIN_PIN_LEG_HEIGHT);
+};
+
+const getMainpinCoords = () => {
+  return `${getMainpinXCoord()}, ${getMainpinYCoord()}`;
+};
+
 const fillAdresInput = () => {
   adformAdressInput.value = getMainpinCoords();
 };
 
 fillAdresInput();
-
-const changeMainpinEventsState = (type) => {
-  const method = type ? `addEventListener` : `removeEventListener`;
-  mainPinElement[method](`mousedown`, onMainpinMousedown);
-  mainPinElement[method](`keydown`, onMainpinKeydown);
-};
-
-changeMainpinEventsState(true);
 
 const onMainpinMousedown = (evt) => {
   if (evt.button === СontrolButtons.LEFTMOUSEBTN) {
@@ -341,6 +344,14 @@ const onMainpinKeydown = (evt) => {
   }
 };
 
+const changeMainpinEventsState = (type) => {
+  const method = type ? `addEventListener` : `removeEventListener`;
+  mainPinElement[method](`mousedown`, onMainpinMousedown);
+  mainPinElement[method](`keydown`, onMainpinKeydown);
+};
+
+changeMainpinEventsState(true);
+
 const removeInactiveState = () => {
   map.classList.remove(`map--faded`);
   adformElement.classList.remove(`ad-form--disabled`);
@@ -352,21 +363,6 @@ const removeInactiveState = () => {
   adformTimeoutInput.addEventListener(`change`, onTimeoutInputChange);
   renderElements(hotelsInfo, pinsElement, createPin);
   map.addEventListener(`keydown`, onMapPinKeydown);
-};
-
-const getMainpinCoords = () => {
-  return `${getMainpinXCoord()}, ${getMainpinYCoord()}`;
-};
-
-const getMainpinYCoord = () => {
-  if (map.classList.contains(`map--faded`)) {
-    return Math.round(parseInt(mainPinElement.style.top, 10) + mainPinElement.offsetHeight / 2);
-  }
-  return Math.round(parseInt(mainPinElement.style.top, 10) + mainPinElement.offsetHeight + MAIN_PIN_LEG_HEIGHT);
-};
-
-const getMainpinXCoord = () => {
-  return Math.round(parseInt(mainPinElement.style.left, 10) + mainPinElement.offsetWidth / 2);
 };
 
 const onAdformInputCapacityChange = () => {
@@ -429,7 +425,6 @@ const changePopupEventsState = (type) => {
 
 // продолжение валидации
 
-
 const onTupeInputChange = () => {
   adformPriceInput.min = minPrices[adformTypeInput.value];
 };
@@ -441,4 +436,3 @@ const onTimeinInputChange = () => {
 const onTimeoutInputChange = () => {
   adformTimeinInput.value = adformTimeoutInput.value;
 };
-
