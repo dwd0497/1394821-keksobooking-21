@@ -1,8 +1,10 @@
 "use strict";
 
-const LeftMouseBtn = 0;
-const Enter = `Enter`;
-const Escape = `Escape`;
+const СontrolButtons = {
+  LEFTMOUSEBTN: 0,
+  ENTER: `Enter`,
+  ESCAPE: `Escape`,
+};
 
 const Hotels = {
   COUNT: 8,
@@ -22,6 +24,11 @@ const Pin = {
   HEIGHT: 70,
   MIN_VERTICAL_COORD: 130,
   MAX_VERTICAL_COORD: 630
+};
+
+const HotelImgs = {
+  WIDTH: 45,
+  HEIGHT: 40
 };
 
 const MAIN_PIN_LEG_HEIGHT = 22;
@@ -47,6 +54,13 @@ const hotelTypes = {
   bungalow: `Бунгало`,
   palace: `Дворец`,
   house: `Дом`
+};
+
+const minPrices = {
+  bungalow: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
 };
 
 function getHotels() {
@@ -147,12 +161,16 @@ function movePinTo(pin, location) {
   pin.style.left = `${location.x - Pin.WIDTH / 2}px`;
 }
 
-function createPin(hotel) {
+function createPin(hotel, i) {
   const pin = pinTemplate.cloneNode(true);
   movePinTo(pin, hotel.location);
   const pinImg = pin.querySelector(`img`);
   pinImg.src = `${hotel.author.avatar}`;
   pinImg.alt = `${hotel.offer.title}`;
+  pin.value = i;
+
+  pin.addEventListener(`click`, onMapPinClick);
+
   return pin;
 }
 
@@ -246,8 +264,8 @@ function clearParentAndRenderElements(elements, containerElement, renderElement)
 
 function renderElements(elements, containerElement, renderElement) {
   const fragment = document.createDocumentFragment();
-  elements.forEach((element) => {
-    fragment.appendChild(renderElement(element));
+  elements.forEach((element, i) => {
+    fragment.appendChild(renderElement(element, i));
   });
   containerElement.appendChild(fragment);
 }
@@ -262,11 +280,12 @@ function renderFeature(feature) {
 function renderPhoto(img) {
   const imgElement = document.createElement(`img`);
   imgElement.classList.add(`popup__photo`);
-  imgElement.style.width = `40px`;
-  imgElement.style.height = `40px`;
+  imgElement.style.width = `${HotelImgs.WIDTH}px`;
+  imgElement.style.height = `${HotelImgs.HEIGHT}px`;
   imgElement.src = `${img}`;
   return imgElement;
 }
+
 
 function removeChildren(parentElement) {
   while (parentElement.firstChild) {
@@ -296,7 +315,7 @@ function toggleFormElementsState(formElements, isDisabled) {
 }
 
 function onMainpinMousedown(evt) {
-  if (evt.button === LeftMouseBtn) {
+  if (evt.button === СontrolButtons.LEFTMOUSEBTN) {
     removeInactiveState();
     fillAdresInput();
     changeMainpinEventsState(false);
@@ -304,7 +323,7 @@ function onMainpinMousedown(evt) {
 }
 
 function onMainpinKeydown(evt) {
-  if (evt.key === Enter) {
+  if (evt.key === СontrolButtons.ENTER) {
     removeInactiveState();
     fillAdresInput();
     changeMainpinEventsState(false);
@@ -321,7 +340,6 @@ function removeInactiveState() {
   adformTimeinInput.addEventListener(`change`, onTimeinInputChange);
   adformTimeoutInput.addEventListener(`change`, onTimeoutInputChange);
   renderElements(hotelsInfo, pinsElement, createPin);
-  map.addEventListener(`click`, onMapPinClick);
   map.addEventListener(`keydown`, onMapPinKeydown);
 }
 
@@ -369,21 +387,13 @@ function onAdformInputCapacityChange() {
 // тут код показа карточки отеля
 
 function onMapPinClick(evt) {
-  const mapPinElements = map.querySelectorAll(`.map__pin:not(.map__pin--main)`);
-  const target = evt.target;
-  if (target && target.classList.contains(`map__pin`)) {
-    mapPinElements.forEach((item, i) => {
-      if (target === item) {
-        removeOldCard();
-        renderCard(hotelsInfo[i]);
-        changePopupEventsState(true);
-      }
-    });
-  }
+  removeOldCard();
+  renderCard(hotelsInfo[evt.currentTarget.value]);
+  changePopupEventsState(true);
 }
 
 function onEscPress(evt) {
-  if (evt.key === Escape) {
+  if (evt.key === СontrolButtons.ESCAPE) {
     removeOldCard();
     changePopupEventsState(false);
   }
@@ -395,7 +405,7 @@ function onPopupCloseBtnClick() {
 }
 
 function onMapPinKeydown(evt) {
-  if (evt.key === Enter) {
+  if (evt.key === СontrolButtons.ENTER) {
     onMapPinClick(evt);
   }
 }
@@ -420,15 +430,7 @@ function changePopupEventsState(type) {
 
 
 function onTupeInputChange() {
-  if (adformTypeInput.value === `bungalow`) {
-    adformPriceInput.min = 0;
-  } else if (adformTypeInput.value === `flat`) {
-    adformPriceInput.min = 1000;
-  } else if (adformTypeInput.value === `house`) {
-    adformPriceInput.min = 5000;
-  } else if (adformTypeInput.value === `palace`) {
-    adformPriceInput.min = 10000;
-  }
+  adformPriceInput.min = minPrices[adformTypeInput.value];
 }
 
 function onTimeinInputChange() {
