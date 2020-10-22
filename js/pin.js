@@ -1,6 +1,4 @@
 import {hotelsInfo} from "./data.js";
-import {fillAdresInput} from "./form.js";
-import {removeInactiveState} from "./main.js";
 import {removeOldCard, renderCard, changeCardEventsState} from "./card.js";
 
 const MAIN_PIN_LEG_HEIGHT = 22;
@@ -20,7 +18,7 @@ const СontrolButtons = {
 
 const map = document.querySelector(`.map`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
-const mainPinElement = document.querySelector(`.map__pin--main`);
+const mainPinElement = map.querySelector(`.map__pin--main`);
 
 const getMainpinXCoord = () => {
   return Math.round(parseInt(mainPinElement.style.left, 10) + mainPinElement.offsetWidth / 2);
@@ -56,30 +54,6 @@ const createPin = (hotel, i) => {
 };
 
 // обработчики
-
-const onMainpinMousedown = (evt) => {
-  if (evt.button === СontrolButtons.LEFTMOUSEBTN) {
-    removeInactiveState();
-    fillAdresInput();
-    changeMainpinEventsState(false);
-  }
-};
-
-const onMainpinKeydown = (evt) => {
-  if (evt.key === СontrolButtons.ENTER) {
-    removeInactiveState();
-    fillAdresInput();
-    changeMainpinEventsState(false);
-  }
-};
-
-const changeMainpinEventsState = (type) => {
-  const method = type ? `addEventListener` : `removeEventListener`;
-  mainPinElement[method](`mousedown`, onMainpinMousedown);
-  mainPinElement[method](`keydown`, onMainpinKeydown);
-};
-
-changeMainpinEventsState(true);
 
 const onMapPinClick = (evt) => {
   removeOldCard();

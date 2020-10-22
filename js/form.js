@@ -50,7 +50,7 @@ const onAdformInputCapacityChange = () => {
 
 const onTypeInputChange = () => {
   adformPriceInput.min = minPrices[adformTypeInput.value];
-  adformPriceInput.min = minPrices[adformTypeInput.value];
+  adformPriceInput.placeholder = minPrices[adformTypeInput.value];
 };
 
 const onTimeinInputChange = () => {
@@ -65,9 +65,15 @@ const fillAdresInput = () => {
   adformAdressInput.value = getMainpinCoords();
 };
 
+const inputsListeners = () => {
+  adformCapacityInput.addEventListener(`change`, onAdformInputCapacityChange);
+  adformTypeInput.addEventListener(`change`, onTypeInputChange);
+  adformTimeinInput.addEventListener(`change`, onTimeinInputChange);
+  adformTimeoutInput.addEventListener(`change`, onTimeoutInputChange);
+};
+
 fillAdresInput();
 
 export {
-  onAdformInputCapacityChange, onTypeInputChange,
-  onTimeinInputChange, onTimeoutInputChange, fillAdresInput, toggleFormElementsState
+  inputsListeners, fillAdresInput, toggleFormElementsState
 };
