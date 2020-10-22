@@ -55,7 +55,7 @@ const createPin = (hotel, i) => {
   return pin;
 };
 
-// sa
+// обработчики
 
 const onMainpinMousedown = (evt) => {
   if (evt.button === СontrolButtons.LEFTMOUSEBTN) {

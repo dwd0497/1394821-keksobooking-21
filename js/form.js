@@ -48,7 +48,7 @@ const onAdformInputCapacityChange = () => {
   adformCapacityInput.reportValidity();
 };
 
-const onTupeInputChange = () => {
+const onTypeInputChange = () => {
   adformPriceInput.min = minPrices[adformTypeInput.value];
   adformPriceInput.min = minPrices[adformTypeInput.value];
 };
@@ -68,6 +68,6 @@ const fillAdresInput = () => {
 fillAdresInput();
 
 export {
-  onAdformInputCapacityChange, onTupeInputChange,
+  onAdformInputCapacityChange, onTypeInputChange,
   onTimeinInputChange, onTimeoutInputChange, fillAdresInput, toggleFormElementsState
 };

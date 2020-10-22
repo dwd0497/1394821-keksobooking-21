@@ -2,7 +2,7 @@ import {renderElements} from "./util.js";
 import {hotelsInfo} from "./data.js";
 import {
   onAdformInputCapacityChange,
-  onTupeInputChange,
+  onTypeInputChange,
   onTimeinInputChange,
   onTimeoutInputChange,
   toggleFormElementsState
@@ -10,17 +10,12 @@ import {
 import {createPin, onMapPinKeydown} from "./pin.js";
 
 const map = document.querySelector(`.map`);
-
 const adformElement = document.querySelector(`.ad-form`);
-
 const adformCapacityInput = adformElement.querySelector(`#capacity`);
-
 const adformTypeInput = adformElement.querySelector(`#type`);
-
 const adformTimeinInput = adformElement.querySelector(`#timein`);
 const adformTimeoutInput = adformElement.querySelector(`#timeout`);
 const filtersFormElement = document.querySelector(`.map__filters`);
-
 const pinsElement = document.querySelector(`.map__pins`);
 
 const removeInactiveState = () => {
@@ -29,7 +24,7 @@ const removeInactiveState = () => {
   toggleFormElementsState(adformElement.children, false);
   toggleFormElementsState(filtersFormElement.children, false);
   adformCapacityInput.addEventListener(`change`, onAdformInputCapacityChange);
-  adformTypeInput.addEventListener(`change`, onTupeInputChange);
+  adformTypeInput.addEventListener(`change`, onTypeInputChange);
   adformTimeinInput.addEventListener(`change`, onTimeinInputChange);
   adformTimeoutInput.addEventListener(`change`, onTimeoutInputChange);
   renderElements(hotelsInfo, pinsElement, createPin);
