@@ -133,7 +133,7 @@ const onCardCloseBtnClick = () => {
   changeCardEventsState(false, currentCard);
 };
 
-const removeOldCard = () => {
+export const removeOldCard = () => {
   if (!currentCard) {
     return;
   }

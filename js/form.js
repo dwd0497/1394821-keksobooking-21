@@ -1,3 +1,5 @@
+import {forEach} from "./util.js";
+
 const minPrices = {
   bungalow: 0,
   flat: 1000,
@@ -17,8 +19,6 @@ const filtersFormElement = document.querySelector(`.map__filters`);
 
 // Управление состоянием форм
 
-const forEach = (elements, cb) => Array.prototype.forEach.call(elements, cb);
-
 const toggleFormElementsState = (formElements, isDisabled) => {
   forEach(formElements, function (element) {
     element.disabled = isDisabled;
@@ -30,20 +30,31 @@ toggleFormElementsState(filtersFormElement.children, true);
 
 // Валидация
 
+const guestsAndRoomsValidity = (rooms, guests, onElement) => {
+  if (rooms === 100 && guests !== 0) {
+    onElement.setCustomValidity(`100 комнат не для гостей`);
+  } else if (rooms < guests && guests !== 0) {
+    onElement.setCustomValidity(`Количество мест не может превышать количество комнат`);
+  } else if (rooms !== 100 && guests === 0) {
+    onElement.setCustomValidity(`Не для гостей только 100 комнатные номера`);
+  } else {
+    onElement.setCustomValidity(``);
+  }
+  onElement.reportValidity();
+};
+
 const onAdformInputCapacityChange = () => {
   const guests = +adformCapacityInput.value;
   const rooms = +adformRoomNumberInput.value;
 
-  if (rooms === 100 && guests !== 0) {
-    adformCapacityInput.setCustomValidity(`100 комнат не для гостей`);
-  } else if (rooms < guests && guests !== 0) {
-    adformCapacityInput.setCustomValidity(`Количество мест не может превышать количество комнат`);
-  } else if (rooms !== 100 && guests === 0) {
-    adformCapacityInput.setCustomValidity(`Не для гостей только 100 комнатные номера`);
-  } else {
-    adformCapacityInput.setCustomValidity(``);
-  }
-  adformCapacityInput.reportValidity();
+  guestsAndRoomsValidity(rooms, guests, adformCapacityInput);
+};
+
+const onAdformInputRoomNumberChange = () => {
+  const guests = +adformCapacityInput.value;
+  const rooms = +adformRoomNumberInput.value;
+
+  guestsAndRoomsValidity(rooms, guests, adformRoomNumberInput);
 };
 
 const onTypeInputChange = () => {
@@ -59,14 +70,27 @@ const onTimeoutInputChange = () => {
   adformTimeinInput.value = adformTimeoutInput.value;
 };
 
+const changeFormInputsEventsState = (type) => {
+  const method = type ? `addEventListener` : `removeEventListener`;
+  adformCapacityInput[method](`change`, onAdformInputCapacityChange);
+  adformRoomNumberInput[method](`change`, onAdformInputRoomNumberChange);
+  adformTypeInput[method](`change`, onTypeInputChange);
+  adformTimeinInput[method](`change`, onTimeinInputChange);
+  adformTimeoutInput[method](`change`, onTimeoutInputChange);
+};
+
 export const activateForm = () => {
   adformElement.classList.remove(`ad-form--disabled`);
   toggleFormElementsState(adformElement.children, false);
   toggleFormElementsState(filtersFormElement.children, false);
-  adformCapacityInput.addEventListener(`change`, onAdformInputCapacityChange);
-  adformTypeInput.addEventListener(`change`, onTypeInputChange);
-  adformTimeinInput.addEventListener(`change`, onTimeinInputChange);
-  adformTimeoutInput.addEventListener(`change`, onTimeoutInputChange);
+  changeFormInputsEventsState(true);
+};
+
+export const deactivateForm = () => {
+  adformElement.classList.add(`ad-form--disabled`);
+  toggleFormElementsState(adformElement.children, true);
+  toggleFormElementsState(filtersFormElement.children, true);
+  changeFormInputsEventsState(false);
 };
 
 export const fillAdresInput = (x, y) => {

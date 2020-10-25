@@ -1,26 +1,35 @@
-import {isEnter, isLeftMouseBtnClick} from "./util.js";
+import {isEnter, isLeftMouseButton} from "./util.js";
+import {pinMovement} from "./pin-movement.js";
 import {activate} from "./map.js";
 
 const mainPinElement = document.querySelector(`.map__pin--main`);
 
 const MAIN_PIN_LEG_HEIGHT = 22;
 
+const getMainPinHeight = () => {
+  return mainPinElement.offsetHeight;
+};
+
+const getMainPinWidth = () => {
+  return mainPinElement.offsetWidth;
+};
+
 export const getMainpinXCoord = () => {
-  return Math.round(parseInt(mainPinElement.style.left, 10) + mainPinElement.offsetWidth / 2);
+  return Math.round(parseInt(mainPinElement.style.left, 10) + getMainPinWidth() / 2);
 };
 
 export const getMainpinYCoord = (mapElement) => {
   if (mapElement.classList.contains(`map--faded`)) {
-    return Math.round(parseInt(mainPinElement.style.top, 10) + mainPinElement.offsetHeight / 2);
+    return Math.round(parseInt(mainPinElement.style.top, 10) + getMainPinHeight() / 2);
   }
-  return Math.round(parseInt(mainPinElement.style.top, 10) + mainPinElement.offsetHeight + MAIN_PIN_LEG_HEIGHT);
+  return Math.round(parseInt(mainPinElement.style.top, 10) + getMainPinHeight() + MAIN_PIN_LEG_HEIGHT);
 };
 
 const onMainpinMousedown = (evt) => {
-  if (!isLeftMouseBtnClick(evt)) {
+  if (!isLeftMouseButton(evt)) {
     return;
   } else {
-    activate();
+    pinMovement(evt, mainPinElement);
   }
 };
 

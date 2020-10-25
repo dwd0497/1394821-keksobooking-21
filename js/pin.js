@@ -1,6 +1,8 @@
 import {isEnter} from "./util.js";
 import {hotelsInfo} from "./data.js";
 import {showCard} from "./card.js";
+import {renderElements} from "./util.js";
+import {removeCurrentChildren} from "./util.js";
 
 const Pin = {
   WIDTH: 50,
@@ -9,6 +11,9 @@ const Pin = {
   MAX_VERTICAL_COORD: 630
 };
 
+const SECONDARY_PIN = `map__pin--secondary`;
+
+const pinsElement = document.querySelector(`.map__pins`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 
 const movePinTo = (pin, location) => {
@@ -18,6 +23,7 @@ const movePinTo = (pin, location) => {
 
 const createPin = (hotel, i) => {
   const pin = pinTemplate.cloneNode(true);
+  pin.classList.add(SECONDARY_PIN);
   movePinTo(pin, hotel.location);
   const pinImg = pin.querySelector(`img`);
   pinImg.src = `${hotel.author.avatar}`;
@@ -28,6 +34,15 @@ const createPin = (hotel, i) => {
   pin.addEventListener(`keydown`, onMapPinKeydown);
 
   return pin;
+};
+
+export const renderPins = () => {
+  removeCurrentChildren(pinsElement, SECONDARY_PIN);
+  renderElements(hotelsInfo, pinsElement, createPin);
+};
+
+export const removePins = () => {
+  removeCurrentChildren(pinsElement, SECONDARY_PIN);
 };
 
 // обработчики
@@ -43,5 +58,3 @@ const onMapPinKeydown = (evt) => {
     onMapPinClick(evt);
   }
 };
-
-export {createPin};

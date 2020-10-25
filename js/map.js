@@ -1,30 +1,39 @@
-import {renderElements} from "./util.js";
-import {activateForm} from "./form.js";
-import {hotelsInfo} from "./data.js";
-import {createPin} from "./pin.js";
-import {getMainpinXCoord, getMainpinYCoord, changeMainpinEventsState} from "./main-pin.js";
 
+import {activateForm, deactivateForm} from "./form.js";
+import {getMainpinXCoord, getMainpinYCoord} from "./main-pin.js";
 import {fillAdresInput} from "./form.js";
+import {renderPins, removePins} from "./pin.js";
+import {removeOldCard} from "./card.js";
 
 const map = document.querySelector(`.map`);
-const pinsElement = document.querySelector(`.map__pins`);
 
-const removeInactiveState = () => {
+export const removeInactiveState = () => {
   map.classList.remove(`map--faded`);
-  renderElements(hotelsInfo, pinsElement, createPin);
+  renderPins();
   activateForm();
+};
+
+export const addInactiveState = () => {
+  map.classList.add(`map--faded`);
+  removePins();
+  removeOldCard();
+  deactivateForm();
+};
+
+// setTimeout(addInactiveState, 5000); // Для проверки активации неактивного состония
+
+export const getAdresInput = () => {
+  return fillAdresInput(getMainpinXCoord(), getMainpinYCoord(map));
 };
 
 export const activate = () => {
   removeInactiveState();
-  fillAdresInput(getMainpinXCoord(), getMainpinYCoord(map));
-  changeMainpinEventsState(false);
+  getAdresInput();
+  // changeMainpinEventsState(false); добавить эту строчку на переход в неактивное состояние???(нет)
 };
 
-fillAdresInput(getMainpinXCoord(), getMainpinYCoord(map));
+getAdresInput();
 
 export const mapInsertBefore = (beforeElement, insertedElement) => {
   map.insertBefore(beforeElement, insertedElement);
 };
-
-export {removeInactiveState};
