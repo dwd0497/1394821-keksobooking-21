@@ -1,7 +1,6 @@
+import {isEnter} from "./util.js";
 import {hotelsInfo} from "./data.js";
-import {removeOldCard, renderCard, changeCardEventsState} from "./card.js";
-
-const MAIN_PIN_LEG_HEIGHT = 22;
+import {showCard} from "./card.js";
 
 const Pin = {
   WIDTH: 50,
@@ -10,30 +9,7 @@ const Pin = {
   MAX_VERTICAL_COORD: 630
 };
 
-const СontrolButtons = {
-  LEFTMOUSEBTN: 0,
-  ENTER: `Enter`,
-  ESCAPE: `Escape`,
-};
-
-const map = document.querySelector(`.map`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
-const mainPinElement = map.querySelector(`.map__pin--main`);
-
-const getMainpinXCoord = () => {
-  return Math.round(parseInt(mainPinElement.style.left, 10) + mainPinElement.offsetWidth / 2);
-};
-
-const getMainpinYCoord = () => {
-  if (map.classList.contains(`map--faded`)) {
-    return Math.round(parseInt(mainPinElement.style.top, 10) + mainPinElement.offsetHeight / 2);
-  }
-  return Math.round(parseInt(mainPinElement.style.top, 10) + mainPinElement.offsetHeight + MAIN_PIN_LEG_HEIGHT);
-};
-
-const getMainpinCoords = () => {
-  return `${getMainpinXCoord()}, ${getMainpinYCoord()}`;
-};
 
 const movePinTo = (pin, location) => {
   pin.style.top = `${location.y - Pin.HEIGHT}px`;
@@ -49,6 +25,7 @@ const createPin = (hotel, i) => {
   pin.value = i;
 
   pin.addEventListener(`click`, onMapPinClick);
+  pin.addEventListener(`keydown`, onMapPinKeydown);
 
   return pin;
 };
@@ -56,15 +33,15 @@ const createPin = (hotel, i) => {
 // обработчики
 
 const onMapPinClick = (evt) => {
-  removeOldCard();
-  renderCard(hotelsInfo[evt.currentTarget.value]);
-  changeCardEventsState(true);
+  showCard(hotelsInfo[evt.currentTarget.value]);
 };
 
 const onMapPinKeydown = (evt) => {
-  if (evt.key === СontrolButtons.ENTER) {
+  if (!isEnter(evt)) {
+    return;
+  } else {
     onMapPinClick(evt);
   }
 };
 
-export {createPin, getMainpinCoords, onMapPinKeydown};
+export {createPin};

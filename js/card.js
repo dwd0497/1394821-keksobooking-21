@@ -1,4 +1,5 @@
-import {clearParentAndRenderElements} from "./util.js";
+import {isEscape, clearParentAndRenderElements} from "./util.js";
+import {mapInsertBefore} from "./map.js";
 
 const hotelTypes = {
   flat: `Квартира`,
@@ -12,15 +13,9 @@ const HotelImgs = {
   HEIGHT: 40
 };
 
-const СontrolButtons = {
-  LEFTMOUSEBTN: 0,
-  ENTER: `Enter`,
-  ESCAPE: `Escape`,
-};
-
-const map = document.querySelector(`.map`);
 const filtersContainerElement = document.querySelector(`.map__filters-container`);
 const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
+let currentCard = null;
 
 const createСard = (hotel) => {
   const сard = cardTemplate.cloneNode(true);
@@ -117,35 +112,44 @@ const renderPhoto = (img) => {
 };
 
 const renderCard = (card) => {
-  map.insertBefore(createСard(card), filtersContainerElement);
+  const cardElement = createСard(card);
+  mapInsertBefore(cardElement, filtersContainerElement);
+  changeCardEventsState(true, cardElement);
+
+  return cardElement;
 };
 
 const onEscPress = (evt) => {
-  if (evt.key === СontrolButtons.ESCAPE) {
+  if (!isEscape(evt)) {
+    return;
+  } else {
     removeOldCard();
-    changeCardEventsState(false);
+    changeCardEventsState(false, currentCard);
   }
 };
 
 const onCardCloseBtnClick = () => {
   removeOldCard();
-  changeCardEventsState(false);
+  changeCardEventsState(false, currentCard);
 };
 
 const removeOldCard = () => {
-  const oldCard = map.querySelector(`.map__card`);
-  if (oldCard) {
-    oldCard.remove();
+  if (!currentCard) {
+    return;
   }
+  currentCard.remove();
 };
 
-const changeCardEventsState = (type) => {
+const changeCardEventsState = (type, cardElement) => {
   const method = type ? `addEventListener` : `removeEventListener`;
-  const popupCloseBtn = map.querySelector(`.popup__close`);
+  const popupCloseBtn = cardElement.querySelector(`.popup__close`);
   if (popupCloseBtn) {
     popupCloseBtn[method](`click`, onCardCloseBtnClick);
     document[method](`keydown`, onEscPress);
   }
 };
 
-export {removeOldCard, renderCard, changeCardEventsState};
+export const showCard = (data) => {
+  removeOldCard();
+  currentCard = renderCard(data);
+};

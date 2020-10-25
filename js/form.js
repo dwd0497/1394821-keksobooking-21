@@ -1,5 +1,3 @@
-import {getMainpinCoords} from "./pin.js";
-
 const minPrices = {
   bungalow: 0,
   flat: 1000,
@@ -61,19 +59,16 @@ const onTimeoutInputChange = () => {
   adformTimeinInput.value = adformTimeoutInput.value;
 };
 
-const fillAdresInput = () => {
-  adformAdressInput.value = getMainpinCoords();
-};
-
-const inputsListeners = () => {
+export const activateForm = () => {
+  adformElement.classList.remove(`ad-form--disabled`);
+  toggleFormElementsState(adformElement.children, false);
+  toggleFormElementsState(filtersFormElement.children, false);
   adformCapacityInput.addEventListener(`change`, onAdformInputCapacityChange);
   adformTypeInput.addEventListener(`change`, onTypeInputChange);
   adformTimeinInput.addEventListener(`change`, onTimeinInputChange);
   adformTimeoutInput.addEventListener(`change`, onTimeoutInputChange);
 };
 
-fillAdresInput();
-
-export {
-  inputsListeners, fillAdresInput, toggleFormElementsState
+export const fillAdresInput = (x, y) => {
+  adformAdressInput.value = `${x}, ${y}`;
 };
