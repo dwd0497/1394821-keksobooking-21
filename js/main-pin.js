@@ -29,6 +29,7 @@ const onMainpinMousedown = (evt) => {
   if (!isLeftMouseButton(evt)) {
     return;
   } else {
+    activate();
     pinMovement(evt, mainPinElement, MAIN_PIN_LEG_HEIGHT);
   }
 };

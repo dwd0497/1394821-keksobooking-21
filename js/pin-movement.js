@@ -1,4 +1,4 @@
-import {getAdresInput, activate} from "./map.js";
+import {getAdresInput} from "./map.js";
 
 export const pinMovement = (evt, mainPin, mainPinHeight) => {
   let startCoords = {
@@ -36,7 +36,6 @@ export const pinMovement = (evt, mainPin, mainPinHeight) => {
     getAdresInput();
   };
   const onMouseUp = () => {
-    activate();
     document.removeEventListener(`mousemove`, onMouseMove);
     document.removeEventListener(`mouseup`, onMouseUp);
   };

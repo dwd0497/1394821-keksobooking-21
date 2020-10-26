@@ -1,8 +1,6 @@
 import {isEnter, forEach} from "./util.js";
-import {hotelsInfo} from "./data.js";
 import {showCard} from "./card.js";
-import {renderElements} from "./util.js";
-import {removeCurrentChildren} from "./util.js";
+import {renderElements, removeCurrentChildren} from "./util.js";
 
 const Pin = {
   WIDTH: 50,
@@ -36,9 +34,9 @@ const createPin = (hotel, i) => {
   return pin;
 };
 
-export const renderPins = () => {
+export const renderPins = (hotelsData) => {
   removePins();
-  renderElements(hotelsInfo, pinsElement, createPin);
+  renderElements(hotelsData, pinsElement, createPin);
 };
 
 export const removePins = () => {
@@ -53,11 +51,11 @@ const deletePinActiveClass = () => {
   });
 };
 
-
 const onMapPinClick = (evt) => {
+  const target = evt.currentTarget;
   deletePinActiveClass();
-  evt.currentTarget.classList.add(Pin.CLASS_ACTIVE);
-  showCard(hotelsInfo[evt.currentTarget.value]);
+  target.classList.add(Pin.CLASS_ACTIVE);
+  showCard(target.value);
 };
 
 const onMapPinKeydown = (evt) => {
@@ -67,3 +65,4 @@ const onMapPinKeydown = (evt) => {
     onMapPinClick(evt);
   }
 };
+
