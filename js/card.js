@@ -115,7 +115,6 @@ const renderPhoto = (img) => {
 const renderCard = (card) => {
   const cardElement = createСard(card);
   mapInsertBefore(cardElement, filtersContainerElement);
-  changeCardEventsState(true, cardElement);
 
   return cardElement;
 };
@@ -124,18 +123,19 @@ const onEscPress = (evt) => {
   if (!isEscape(evt)) {
     return;
   } else {
-    changeCardEventsState(false, currentCard);
+    hideOldCard();
   }
 };
 
 const onCardCloseBtnClick = () => {
-  changeCardEventsState(false, currentCard);
+  hideOldCard();
 };
 
-export const hideOldCard = () => {
+const hideOldCard = () => {
   if (!currentCard) {
     return;
   }
+  changeCardEventsState(false, currentCard);
   currentCard.style.display = `none`;
 };
 
@@ -155,6 +155,7 @@ export const showCard = (cardNumber) => {
     if (i === +cardNumber) {
       card.style.display = `block`;
       currentCard = card;
+      changeCardEventsState(true, card);
     }
   });
 };
