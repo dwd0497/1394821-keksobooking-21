@@ -3,7 +3,7 @@ import {activateForm, deactivateForm} from "./form.js";
 import {getMainpinXCoord, getMainpinYCoord} from "./main-pin.js";
 import {fillAdresInput} from "./form.js";
 import {renderPins, removePins} from "./pin.js";
-import {createCards} from "./card.js";
+import {createCards, hideOldCard} from "./card.js";
 
 const map = document.querySelector(`.map`);
 
@@ -16,7 +16,7 @@ export const removeInactiveState = (hotelsData) => {
 export const addInactiveState = () => {
   map.classList.add(`map--faded`);
   removePins();
-  // removeOldCard();
+  hideOldCard();
   deactivateForm();
 };
 
@@ -28,13 +28,34 @@ export const getAdresInput = () => {
 
 export const activate = () => {
   if (map.classList.contains(`map--faded`)) {
-    loadData((hotelsData) => {
-      removeInactiveState(hotelsData);
-      createCards(hotelsData);
-    });
+    loadData(successHandler, errorHandler);
     getAdresInput();
     // changeMainpinEventsState(false); добавить эту строчку на переход в неактивное состояние???(нет)
   }
+};
+
+const successHandler = (hotelsData) => {
+  removeInactiveState(hotelsData);
+  createCards(hotelsData);
+};
+
+const errorHandler = (errorMessage) => {
+  const node = document.createElement(`div`);
+  node.style = `z-index: 100; text-align: center; background-color: gray; transform: translate(-50%, -50%);`;
+  node.style.position = `fixed`;
+  node.style.borderRadius = `20px`;
+  node.style.boxShadow = `4px 4px 8px 0px rgba(255, 255, 255, 0.5)`;
+  node.style.color = `#fff`;
+  node.style.top = `50%`;
+  node.style.left = `50%`;
+  node.style.padding = `40px 20px`;
+  node.style.fontSize = `30px`;
+  node.style.cursor = `default`;
+
+  node.textContent = errorMessage;
+  document.body.appendChild(node);
+
+  // добавить оверлей и возможноть закрытия
 };
 
 getAdresInput();

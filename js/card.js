@@ -131,7 +131,7 @@ const onCardCloseBtnClick = () => {
   hideOldCard();
 };
 
-const hideOldCard = () => {
+export const hideOldCard = () => {
   if (!currentCard) {
     return;
   }

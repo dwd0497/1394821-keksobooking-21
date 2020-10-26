@@ -1,7 +1,7 @@
 const StatusCode = {
   OK: 200
 };
-const TIMEOUT_IN_MS = 10000;
+const TIMEOUT_IN_MS = 1000;
 
 const createXHR = (method, url, onSuccess, onError) => {
   const xhr = new XMLHttpRequest();
