@@ -2,9 +2,9 @@ import {isEnter, isLeftMouseButton} from "./util.js";
 import {pinMovement} from "./pin-movement.js";
 import {activate} from "./map.js";
 
-const mainPinElement = document.querySelector(`.map__pin--main`);
-
 const MAIN_PIN_LEG_HEIGHT = 22;
+
+const mainPinElement = document.querySelector(`.map__pin--main`);
 
 const getMainPinHeight = () => {
   return mainPinElement.offsetHeight;
@@ -29,7 +29,7 @@ const onMainpinMousedown = (evt) => {
   if (!isLeftMouseButton(evt)) {
     return;
   } else {
-    pinMovement(evt, mainPinElement);
+    pinMovement(evt, mainPinElement, MAIN_PIN_LEG_HEIGHT);
   }
 };
 

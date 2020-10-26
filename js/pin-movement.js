@@ -1,9 +1,6 @@
 import {getAdresInput, activate} from "./map.js";
 
-
-const MAIN_PIN_LEG_HEIGHT = 22;
-
-export const pinMovement = (evt, mainPin) => {
+export const pinMovement = (evt, mainPin, mainPinHeight) => {
   let startCoords = {
     x: evt.clientX,
     y: evt.clientY
@@ -20,10 +17,10 @@ export const pinMovement = (evt, mainPin) => {
       y: moveEvt.clientY
     };
 
-    if (mainPin.offsetTop < 130 - mainPin.offsetHeight - MAIN_PIN_LEG_HEIGHT) {
-      mainPin.style.top = `${130 - mainPin.offsetHeight - MAIN_PIN_LEG_HEIGHT}px`;
-    } else if (mainPin.offsetTop > 630 - mainPin.offsetHeight - MAIN_PIN_LEG_HEIGHT) {
-      mainPin.style.top = `${630 - mainPin.offsetHeight - MAIN_PIN_LEG_HEIGHT}px`;
+    if (mainPin.offsetTop < 130 - mainPin.offsetHeight - mainPinHeight) {
+      mainPin.style.top = `${130 - mainPin.offsetHeight - mainPinHeight}px`;
+    } else if (mainPin.offsetTop > 630 - mainPin.offsetHeight - mainPinHeight) {
+      mainPin.style.top = `${630 - mainPin.offsetHeight - mainPinHeight}px`;
     } else {
       mainPin.style.top = (mainPin.offsetTop - shift.y) + `px`;
     }
@@ -35,9 +32,10 @@ export const pinMovement = (evt, mainPin) => {
     } else {
       mainPin.style.left = (mainPin.offsetLeft - shift.x) + `px`;
     }
+
+    getAdresInput();
   };
   const onMouseUp = () => {
-    getAdresInput();
     activate();
     document.removeEventListener(`mousemove`, onMouseMove);
     document.removeEventListener(`mouseup`, onMouseUp);

@@ -1,4 +1,4 @@
-import {isEnter} from "./util.js";
+import {isEnter, forEach} from "./util.js";
 import {hotelsInfo} from "./data.js";
 import {showCard} from "./card.js";
 import {renderElements} from "./util.js";
@@ -8,10 +8,10 @@ const Pin = {
   WIDTH: 50,
   HEIGHT: 70,
   MIN_VERTICAL_COORD: 130,
-  MAX_VERTICAL_COORD: 630
+  MAX_VERTICAL_COORD: 630,
+  CLASS_SECONDARY: `map__pin--secondary`,
+  CLASS_ACTIVE: `map__pin--active`
 };
-
-const SECONDARY_PIN = `map__pin--secondary`;
 
 const pinsElement = document.querySelector(`.map__pins`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
@@ -23,7 +23,7 @@ const movePinTo = (pin, location) => {
 
 const createPin = (hotel, i) => {
   const pin = pinTemplate.cloneNode(true);
-  pin.classList.add(SECONDARY_PIN);
+  pin.classList.add(Pin.CLASS_SECONDARY);
   movePinTo(pin, hotel.location);
   const pinImg = pin.querySelector(`img`);
   pinImg.src = `${hotel.author.avatar}`;
@@ -37,17 +37,26 @@ const createPin = (hotel, i) => {
 };
 
 export const renderPins = () => {
-  removeCurrentChildren(pinsElement, SECONDARY_PIN);
+  removePins();
   renderElements(hotelsInfo, pinsElement, createPin);
 };
 
 export const removePins = () => {
-  removeCurrentChildren(pinsElement, SECONDARY_PIN);
+  removeCurrentChildren(pinsElement, Pin.CLASS_SECONDARY);
 };
 
-// обработчики
+const deletePinActiveClass = () => {
+  forEach(pinsElement.children, (pin) => {
+    if (pin.classList.contains(Pin.CLASS_ACTIVE)) {
+      pin.classList.remove(Pin.CLASS_ACTIVE);
+    }
+  });
+};
+
 
 const onMapPinClick = (evt) => {
+  deletePinActiveClass();
+  evt.currentTarget.classList.add(Pin.CLASS_ACTIVE);
   showCard(hotelsInfo[evt.currentTarget.value]);
 };
 
