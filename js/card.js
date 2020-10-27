@@ -1,16 +1,16 @@
 import {isEscape, clearParentAndRenderElements} from "./util.js";
 import {mapInsertBefore} from "./map.js";
 
-const HotelImgs = {
-  WIDTH: 45,
-  HEIGHT: 40
-};
-
 const hotelTypes = {
   flat: `Квартира`,
   bungalow: `Бунгало`,
   palace: `Дворец`,
   house: `Дом`
+};
+
+const HotelImgs = {
+  WIDTH: 45,
+  HEIGHT: 40
 };
 
 const filtersContainerElement = document.querySelector(`.map__filters-container`);
@@ -19,7 +19,6 @@ let currentCard = null;
 
 const createСard = (hotel) => {
   const card = cardTemplate.cloneNode(true);
-  card.style.display = `none`;
 
   renderFeatureField(
       hotel.offer.title,
@@ -115,6 +114,7 @@ const renderPhoto = (img) => {
 const renderCard = (card) => {
   const cardElement = createСard(card);
   mapInsertBefore(cardElement, filtersContainerElement);
+  changeCardEventsState(true, cardElement);
 
   return cardElement;
 };
@@ -123,20 +123,21 @@ const onEscPress = (evt) => {
   if (!isEscape(evt)) {
     return;
   } else {
-    hideOldCard();
+    changeCardEventsState(false, currentCard);
+    removeOldCard();
   }
 };
 
 const onCardCloseBtnClick = () => {
-  hideOldCard();
+  changeCardEventsState(false, currentCard);
+  removeOldCard();
 };
 
-export const hideOldCard = () => {
+export const removeOldCard = () => {
   if (!currentCard) {
     return;
   }
-  changeCardEventsState(false, currentCard);
-  currentCard.style.display = `none`;
+  currentCard.remove();
 };
 
 const changeCardEventsState = (type, cardElement) => {
@@ -148,20 +149,7 @@ const changeCardEventsState = (type, cardElement) => {
   }
 };
 
-export const showCard = (cardNumber) => {
-  hideOldCard();
-  const cards = document.querySelectorAll(`.map__card`);
-  cards.forEach((card, i)=>{
-    if (i === +cardNumber) {
-      card.style.display = `block`;
-      currentCard = card;
-      changeCardEventsState(true, card);
-    }
-  });
-};
-
-export const createCards = (hotelsData) => {
-  hotelsData.forEach((element) => {
-    renderCard(element);
-  });
+export const showCard = (data) => {
+  removeOldCard();
+  currentCard = renderCard(data);
 };

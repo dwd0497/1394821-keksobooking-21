@@ -14,6 +14,9 @@ const Pin = {
 const pinsElement = document.querySelector(`.map__pins`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 
+
+let data = [];
+
 const movePinTo = (pin, location) => {
   pin.style.top = `${location.y - Pin.HEIGHT}px`;
   pin.style.left = `${location.x - Pin.WIDTH / 2}px`;
@@ -35,8 +38,9 @@ const createPin = (hotel, i) => {
 };
 
 export const renderPins = (hotelsData) => {
+  data = hotelsData;
   removePins();
-  renderElements(hotelsData, pinsElement, createPin);
+  renderElements(data, pinsElement, createPin);
 };
 
 export const removePins = () => {
@@ -55,7 +59,7 @@ const onMapPinClick = (evt) => {
   const target = evt.currentTarget;
   deletePinActiveClass();
   target.classList.add(Pin.CLASS_ACTIVE);
-  showCard(target.value);
+  showCard(data[target.value]);
 };
 
 const onMapPinKeydown = (evt) => {
@@ -65,4 +69,3 @@ const onMapPinKeydown = (evt) => {
     onMapPinClick(evt);
   }
 };
-

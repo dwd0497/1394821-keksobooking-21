@@ -3,7 +3,7 @@ import {activateForm, deactivateForm} from "./form.js";
 import {getMainpinXCoord, getMainpinYCoord} from "./main-pin.js";
 import {fillAdresInput} from "./form.js";
 import {renderPins, removePins} from "./pin.js";
-import {createCards, hideOldCard} from "./card.js";
+import {removeOldCard} from "./card.js";
 
 const map = document.querySelector(`.map`);
 
@@ -16,7 +16,7 @@ export const removeInactiveState = (hotelsData) => {
 export const addInactiveState = () => {
   map.classList.add(`map--faded`);
   removePins();
-  hideOldCard();
+  removeOldCard();
   deactivateForm();
 };
 
@@ -36,7 +36,6 @@ export const activate = () => {
 
 const successHandler = (hotelsData) => {
   removeInactiveState(hotelsData);
-  createCards(hotelsData);
 };
 
 const errorHandler = (errorMessage) => {
