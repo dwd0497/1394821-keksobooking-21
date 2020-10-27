@@ -1,5 +1,5 @@
 const СontrolButtons = {
-  LEFTMOUSEBTN: 0,
+  LEFT_MOUSE_BTN: 0,
   ENTER: `Enter`,
   ESCAPE: `Escape`,
 };
@@ -13,7 +13,7 @@ export function isEscape(evt) {
 }
 
 export function isLeftMouseButton(evt) {
-  return evt.key === СontrolButtons.Enter;
+  return evt.button === СontrolButtons.LEFT_MOUSE_BTN;
 }
 
 export const renderElements = (elements, containerElement, renderElement) => {
