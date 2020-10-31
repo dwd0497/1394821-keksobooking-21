@@ -18,10 +18,23 @@ export function isLeftMouseButton(evt) {
 
 export const renderElements = (elements, containerElement, renderElement) => {
   const fragment = document.createDocumentFragment();
+
   elements.forEach((element, i) => {
     fragment.appendChild(renderElement(element, i));
   });
   containerElement.appendChild(fragment);
+};
+
+export const renderAndGetElements = (elements, containerElement, renderElement) => {
+  const fragment = document.createDocumentFragment();
+  let currentElements = [];
+  elements.forEach((element, i) => {
+    const currentElement = renderElement(element, i);
+    fragment.appendChild(currentElement);
+    currentElements.push(currentElement);
+  });
+  containerElement.appendChild(fragment);
+  return currentElements;
 };
 
 export const clearParentAndRenderElements = (elements, containerElement, renderElement) => {

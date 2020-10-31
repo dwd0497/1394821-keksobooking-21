@@ -1,5 +1,5 @@
 import {isEnter, isLeftMouseButton} from "./util.js";
-import {pinMovement} from "./pin-movement.js";
+import {runPinMovement} from "./pin-movement.js";
 import {activate} from "./map.js";
 
 const MAIN_PIN_LEG_HEIGHT = 22;
@@ -30,7 +30,7 @@ const onMainpinMousedown = (evt) => {
     return;
   } else {
     activate();
-    pinMovement(evt, mainPinElement, MAIN_PIN_LEG_HEIGHT);
+    runPinMovement(evt, mainPinElement, MAIN_PIN_LEG_HEIGHT);
   }
 };
 

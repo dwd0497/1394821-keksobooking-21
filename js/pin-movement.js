@@ -1,6 +1,13 @@
-import {getAdresInput} from "./map.js";
+import {getFillAdressInput} from "./map.js";
 
-export const pinMovement = (evt, mainPin, mainPinHeight) => {
+const MainPinPosition = {
+  MIN_VERTICAL: 0,
+  MAX_VERTICAL: 1200,
+  MIN_HORIZONTAL: 130,
+  MAX_HORIZONTAL: 630,
+};
+
+export const runPinMovement = (evt, mainPin, mainPinLegHeight) => {
   let startCoords = {
     x: evt.clientX,
     y: evt.clientY
@@ -17,23 +24,47 @@ export const pinMovement = (evt, mainPin, mainPinHeight) => {
       y: moveEvt.clientY
     };
 
-    if (mainPin.offsetTop < 130 - mainPin.offsetHeight - mainPinHeight) {
-      mainPin.style.top = `${130 - mainPin.offsetHeight - mainPinHeight}px`;
-    } else if (mainPin.offsetTop > 630 - mainPin.offsetHeight - mainPinHeight) {
-      mainPin.style.top = `${630 - mainPin.offsetHeight - mainPinHeight}px`;
+    const getMainPinHeight = () => {
+      return mainPin.offsetHeight + mainPinLegHeight;
+    };
+
+    const getMinMainPinYCoord = () => {
+      return MainPinPosition.MIN_HORIZONTAL - getMainPinHeight();
+    };
+
+    const getMaxMainPinYCoord = () => {
+      return MainPinPosition.MAX_HORIZONTAL - getMainPinHeight();
+    };
+
+    if (mainPin.offsetTop < getMinMainPinYCoord()) {
+      mainPin.style.top = `${getMinMainPinYCoord()}px`;
+    } else if (mainPin.offsetTop > getMaxMainPinYCoord()) {
+      mainPin.style.top = `${getMaxMainPinYCoord()}px`;
     } else {
       mainPin.style.top = (mainPin.offsetTop - shift.y) + `px`;
     }
 
-    if (mainPin.offsetLeft < 0 - mainPin.offsetWidth / 2) {
-      mainPin.style.left = `${-mainPin.offsetWidth / 2}px`;
-    } else if (mainPin.offsetLeft > 1200 - mainPin.offsetWidth / 2) {
-      mainPin.style.left = `${1200 - mainPin.offsetWidth / 2}px`;
+    const getMainPinCenter = () => {
+      return mainPin.offsetWidth / 2;
+    };
+
+    const getMinMainPinXCoord = () => {
+      return MainPinPosition.MIN_VERTICAL - getMainPinCenter();
+    };
+
+    const getMaxMainPinXCoord = () => {
+      return MainPinPosition.MAX_VERTICAL - getMainPinCenter();
+    };
+
+    if (mainPin.offsetLeft < getMinMainPinXCoord()) {
+      mainPin.style.left = `${-getMainPinCenter()}px`;
+    } else if (mainPin.offsetLeft > getMaxMainPinXCoord()) {
+      mainPin.style.left = `${getMaxMainPinXCoord()}px`;
     } else {
       mainPin.style.left = (mainPin.offsetLeft - shift.x) + `px`;
     }
 
-    getAdresInput();
+    getFillAdressInput();
   };
   const onMouseUp = () => {
     document.removeEventListener(`mousemove`, onMouseMove);

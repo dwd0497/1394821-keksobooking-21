@@ -1243,6 +1243,22 @@ fieldset {
   overflow: hidden;
 }
 
+.error_popup {
+  z-index: 100;
+  text-align: center;
+  background-color: gray;
+  transform: translate(-50%, -50%);
+  position: fixed;
+  border-radius: 20px;
+  box-shadow: 4px 4px 8px 0px rgba(255, 255, 255, 0.5);
+  color: #fff;
+  top: 50%;
+  left: 50%;
+  padding: 40px 20px;
+  font-size: 30px;
+  cursor: default;
+}
+
 .hidden {
   display: none;
 }

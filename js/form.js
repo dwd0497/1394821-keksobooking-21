@@ -1,4 +1,5 @@
 import {forEach} from "./util.js";
+import {Validattion} from "./texts.js";
 
 const minPrices = {
   bungalow: 0,
@@ -30,31 +31,31 @@ toggleFormElementsState(filtersFormElement.children, true);
 
 // Валидация
 
-const guestsAndRoomsValidity = (rooms, guests, onElement) => {
+const validateGuestsAndRooms = (rooms, guests, element) => {
   if (rooms === 100 && guests !== 0) {
-    onElement.setCustomValidity(`100 комнат не для гостей`);
+    element.setCustomValidity(Validattion.ONLY_100_ROOMS);
   } else if (rooms < guests && guests !== 0) {
-    onElement.setCustomValidity(`Количество мест не может превышать количество комнат`);
+    element.setCustomValidity(Validattion.GUESTS_MORE_THEN_ROOMS);
   } else if (rooms !== 100 && guests === 0) {
-    onElement.setCustomValidity(`Не для гостей только 100 комнатные номера`);
+    element.setCustomValidity(Validattion.NOT_FOR_GUESTS);
   } else {
-    onElement.setCustomValidity(``);
+    element.setCustomValidity(``);
   }
-  onElement.reportValidity();
+  element.reportValidity();
 };
 
 const onAdformInputCapacityChange = () => {
   const guests = +adformCapacityInput.value;
   const rooms = +adformRoomNumberInput.value;
 
-  guestsAndRoomsValidity(rooms, guests, adformCapacityInput);
+  validateGuestsAndRooms(rooms, guests, adformCapacityInput);
 };
 
 const onAdformInputRoomNumberChange = () => {
   const guests = +adformCapacityInput.value;
   const rooms = +adformRoomNumberInput.value;
 
-  guestsAndRoomsValidity(rooms, guests, adformRoomNumberInput);
+  validateGuestsAndRooms(rooms, guests, adformRoomNumberInput);
 };
 
 const onTypeInputChange = () => {

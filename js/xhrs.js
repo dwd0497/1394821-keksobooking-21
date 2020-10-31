@@ -1,61 +1,56 @@
+import {XHRErrorMessage} from "./texts.js";
+
 const Code = {
   SUCCESS: 200,
-  CACHED: 302,
   INVALID_REQUEST: 400,
   AUTHORIZATION_ERROR: 401,
   ERROR_NOT_FOUND: 404,
   SERVER_ERROR: 500
 };
 
-const TIMEOUT_IN_MS = 1000;
+const Method = {
+  GET: `GET`,
+  POST: `POST`,
+};
 
-const createXHR = (method, url, onSuccess, onError) => {
+const errorCodes = {
+  400: XHRErrorMessage.INVALID_REQUEST,
+  401: XHRErrorMessage.AUTHORIZATION_ERROR,
+  404: XHRErrorMessage.ERROR_NOT_FOUND,
+  500: XHRErrorMessage.SERVER_ERROR,
+};
+
+const dataServer = `https://21.javascript.pages.academy/keksobooking/data`;
+const TIMEOUT_IN_MS = 10000;
+
+const createXHR = (url, onSuccess, onError, method = Method.GET, data = null) => {
   const xhr = new XMLHttpRequest();
 
   xhr.responseType = `json`;
 
   xhr.addEventListener(`load`, () => {
-    let error;
-    switch (xhr.status) {
-      case Code.SUCCESS:
-        onSuccess(xhr.response);
-        break;
 
-      case Code.INVALID_REQUEST:
-        error = `Неверный запрос`;
-        break;
-      case Code.AUTHORIZATION_ERROR:
-        error = `Пользователь не авторизован`;
-        break;
-      case Code.ERROR_NOT_FOUND:
-        error = `Ничего не найдено`;
-        break;
-      case Code.SERVER_ERROR:
-        error = `Ошибка сервера`;
-        break;
-
-      default:
-        error = `Cтатус ответа: ${xhr.status} ${xhr.statusText}`;
-    }
-    if (error) {
-      onError(error);
+    if (xhr.status === Code.SUCCESS) {
+      onSuccess(xhr.response);
+    } else {
+      onError(errorCodes[xhr.status]);
     }
   });
 
   xhr.addEventListener(`error`, function () {
-    onError(`Произошла ошибка соединения`);
+    onError(XHRErrorMessage.CONNECTION_ERROR);
   });
   xhr.addEventListener(`timeout`, function () {
-    onError(`Запрос не успел выполниться за ${xhr.timeout} мс`);
+    onError(`${XHRErrorMessage.TIMEOUT_ERROR} ${xhr.timeout} ${XHRErrorMessage.MILLISECONDS}`);
   });
 
   xhr.timeout = TIMEOUT_IN_MS;
 
   xhr.open(method, url);
-  xhr.send();
+  xhr.send(data);
 };
 
 export const loadData = (onSuccess, onError) => {
-  createXHR(`GET`, `https://21.javascript.pages.academy/keksobooking/data`, onSuccess, onError);
+  createXHR(dataServer, onSuccess, onError);
 };
 

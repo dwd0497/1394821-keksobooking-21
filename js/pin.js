@@ -1,6 +1,6 @@
-import {isEnter, forEach} from "./util.js";
+import {isEnter} from "./util.js";
 import {showCard} from "./card.js";
-import {renderElements, removeCurrentChildren} from "./util.js";
+import {renderAndGetElements} from "./util.js";
 
 const Pin = {
   WIDTH: 50,
@@ -14,8 +14,9 @@ const Pin = {
 const pinsElement = document.querySelector(`.map__pins`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 
-
+let pins = null;
 let data = [];
+let activePin = null;
 
 const movePinTo = (pin, location) => {
   pin.style.top = `${location.y - Pin.HEIGHT}px`;
@@ -40,24 +41,25 @@ const createPin = (hotel, i) => {
 export const renderPins = (hotelsData) => {
   data = hotelsData;
   removePins();
-  renderElements(data, pinsElement, createPin);
+  pins = renderAndGetElements(data, pinsElement, createPin);
 };
 
 export const removePins = () => {
-  removeCurrentChildren(pinsElement, Pin.CLASS_SECONDARY);
+  if (pins !== null && pins !== []) {
+    pins.forEach((element) => element.remove());
+  }
 };
 
 const deletePinActiveClass = () => {
-  forEach(pinsElement.children, (pin) => {
-    if (pin.classList.contains(Pin.CLASS_ACTIVE)) {
-      pin.classList.remove(Pin.CLASS_ACTIVE);
-    }
-  });
+  if (activePin) {
+    activePin.classList.remove(Pin.CLASS_ACTIVE);
+  }
 };
 
 const onMapPinClick = (evt) => {
-  const target = evt.currentTarget;
   deletePinActiveClass();
+  const target = evt.currentTarget;
+  activePin = target;
   target.classList.add(Pin.CLASS_ACTIVE);
   showCard(data[target.value]);
 };

@@ -7,9 +7,9 @@ import {removeOldCard} from "./card.js";
 
 const map = document.querySelector(`.map`);
 
-export const removeInactiveState = (hotelsData) => {
+export const removeInactiveState = (hotels) => {
   map.classList.remove(`map--faded`);
-  renderPins(hotelsData);
+  renderPins(hotels);
   activateForm();
 };
 
@@ -22,34 +22,25 @@ export const addInactiveState = () => {
 
 // setTimeout(addInactiveState, 5000); // Для проверки активации неактивного состония
 
-export const getAdresInput = () => {
+export const getFillAdressInput = () => {
   return fillAdresInput(getMainpinXCoord(), getMainpinYCoord(map));
 };
 
 export const activate = () => {
   if (map.classList.contains(`map--faded`)) {
-    loadData(successHandler, errorHandler);
-    getAdresInput();
+    loadData(onSccess, onError);
+    getFillAdressInput();
     // changeMainpinEventsState(false); добавить эту строчку на переход в неактивное состояние???(нет)
   }
 };
 
-const successHandler = (hotelsData) => {
-  removeInactiveState(hotelsData);
+const onSccess = (hotels) => {
+  removeInactiveState(hotels);
 };
 
-const errorHandler = (errorMessage) => {
+const onError = (errorMessage) => {
   const node = document.createElement(`div`);
-  node.style = `z-index: 100; text-align: center; background-color: gray; transform: translate(-50%, -50%);`;
-  node.style.position = `fixed`;
-  node.style.borderRadius = `20px`;
-  node.style.boxShadow = `4px 4px 8px 0px rgba(255, 255, 255, 0.5)`;
-  node.style.color = `#fff`;
-  node.style.top = `50%`;
-  node.style.left = `50%`;
-  node.style.padding = `40px 20px`;
-  node.style.fontSize = `30px`;
-  node.style.cursor = `default`;
+  node.classList.add(`error_popup`);
 
   node.textContent = errorMessage;
   document.body.appendChild(node);
@@ -57,7 +48,7 @@ const errorHandler = (errorMessage) => {
   // добавить оверлей и возможноть закрытия
 };
 
-getAdresInput();
+getFillAdressInput();
 
 export const mapInsertBefore = (beforeElement, insertedElement) => {
   map.insertBefore(beforeElement, insertedElement);
