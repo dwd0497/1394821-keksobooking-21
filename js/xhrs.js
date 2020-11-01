@@ -20,7 +20,7 @@ const errorCodes = {
   500: XHRErrorMessage.SERVER_ERROR,
 };
 
-const dataServer = `https://21.javascript.pages.academy/keksobooking/data`;
+const DATASERVER = `https://21.javascript.pages.academy/keksobooking/data`;
 const TIMEOUT_IN_MS = 10000;
 
 const createXHR = (url, onSuccess, onError, method = Method.GET, data = null) => {
@@ -51,6 +51,6 @@ const createXHR = (url, onSuccess, onError, method = Method.GET, data = null) =>
 };
 
 export const loadData = (onSuccess, onError) => {
-  createXHR(dataServer, onSuccess, onError);
+  createXHR(DATASERVER, onSuccess, onError);
 };
 
