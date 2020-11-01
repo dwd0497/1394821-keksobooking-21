@@ -18,11 +18,11 @@ const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map
 let currentCard = null;
 
 const createСard = (hotel) => {
-  const сard = cardTemplate.cloneNode(true);
+  const card = cardTemplate.cloneNode(true);
 
   renderFeatureField(
       hotel.offer.title,
-      сard.querySelector(`.popup__title`),
+      card.querySelector(`.popup__title`),
       (element) => {
         element.textContent = hotel.offer.title;
       }
@@ -30,7 +30,7 @@ const createСard = (hotel) => {
 
   renderFeatureField(
       hotel.offer.address,
-      сard.querySelector(`.popup__text--address`),
+      card.querySelector(`.popup__text--address`),
       (element) => {
         element.textContent = hotel.offer.address;
       }
@@ -38,7 +38,7 @@ const createСard = (hotel) => {
 
   renderFeatureField(
       hotel.offer.price,
-      сard.querySelector(`.popup__text--price`),
+      card.querySelector(`.popup__text--price`),
       (element) => {
         element.textContent = `${hotel.offer.price}₽/ночь`;
       }
@@ -46,7 +46,7 @@ const createСard = (hotel) => {
 
   renderFeatureField(
       hotel.offer.type,
-      сard.querySelector(`.popup__type`),
+      card.querySelector(`.popup__type`),
       (element) => {
         element.textContent = hotelTypes[hotel.offer.type];
       }
@@ -54,7 +54,7 @@ const createСard = (hotel) => {
 
   renderFeatureField(
       hotel.offer.rooms && hotel.offer.guests,
-      сard.querySelector(`.popup__text--capacity`),
+      card.querySelector(`.popup__text--capacity`),
       (element) => {
         element.textContent = `${hotel.offer.rooms} комнаты для ${hotel.offer.guests} гостей`;
       }
@@ -62,7 +62,7 @@ const createСard = (hotel) => {
 
   renderFeatureField(
       hotel.offer.checkin && hotel.offer.checkout,
-      сard.querySelector(`.popup__text--time`),
+      card.querySelector(`.popup__text--time`),
       (element) => {
         element.textContent = `Заезд после ${hotel.offer.checkin}, выезд до ${hotel.offer.checkout}`;
       }
@@ -70,7 +70,7 @@ const createСard = (hotel) => {
 
   renderFeatureField(
       hotel.offer.description,
-      сard.querySelector(`.popup__description`),
+      card.querySelector(`.popup__description`),
       (element) => {
         element.textContent = hotel.offer.description;
       }
@@ -78,15 +78,15 @@ const createСard = (hotel) => {
 
   renderFeatureField(
       hotel.author.avatar,
-      сard.querySelector(`.popup__avatar`),
+      card.querySelector(`.popup__avatar`),
       (element) => {
         element.src = hotel.author.avatar;
       }
   );
-  clearParentAndRenderElements(hotel.offer.photos, сard.querySelector(`.popup__photos`), renderPhoto);
-  clearParentAndRenderElements(hotel.offer.features, сard.querySelector(`.popup__features`), renderFeature);
+  clearParentAndRenderElements(hotel.offer.photos, card.querySelector(`.popup__photos`), renderPhoto);
+  clearParentAndRenderElements(hotel.offer.features, card.querySelector(`.popup__features`), renderFeature);
 
-  return сard;
+  return card;
 };
 
 const renderFeatureField = (condition, element, cb) => {
@@ -123,17 +123,17 @@ const onEscPress = (evt) => {
   if (!isEscape(evt)) {
     return;
   } else {
-    removeOldCard();
     changeCardEventsState(false, currentCard);
+    removeOldCard();
   }
 };
 
 const onCardCloseBtnClick = () => {
-  removeOldCard();
   changeCardEventsState(false, currentCard);
+  removeOldCard();
 };
 
-const removeOldCard = () => {
+export const removeOldCard = () => {
   if (!currentCard) {
     return;
   }
