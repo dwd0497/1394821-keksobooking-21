@@ -18,6 +18,7 @@ export const addInactiveState = () => {
   removePins();
   removeOldCard();
   deactivateForm();
+  getFillAdressInput();
 };
 
 // setTimeout(addInactiveState, 5000); // Для проверки активации неактивного состония
