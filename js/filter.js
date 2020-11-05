@@ -1,5 +1,10 @@
 import {updatePins} from "./pin.js";
 
+const Prices = {
+  CHEAP: 10000,
+  EXPANSEIVE: 50000,
+};
+
 const housingTypeSelect = document.querySelector(`#housing-type`);
 const housingPriceSelect = document.querySelector(`#housing-price`);
 
@@ -32,11 +37,13 @@ const filterByType = (hotel) => {
 const filterByPrice = (hotel) => {
   if (housingPriceSelect.value === `any`) {
     return true;
-  } else if (housingPriceSelect.value === `low` && hotel.offer.price < 10000) {
+  } else if (housingPriceSelect.value === `low` && hotel.offer.price < Prices.CHEAP) {
     return true;
-  } else if (housingPriceSelect.value === `middle` && hotel.offer.price >= 10000 && hotel.offer.price <= 50000) {
+  } else if (housingPriceSelect.value === `middle` &&
+    hotel.offer.price >= Prices.CHEAP &&
+    hotel.offer.price <= Prices.EXPANSEIVE) {
     return true;
-  } else if (housingPriceSelect.value === `high` && hotel.offer.price > 50000) {
+  } else if (housingPriceSelect.value === `high` && hotel.offer.price > Prices.EXPANSEIVE) {
     return true;
   }
   return false;
