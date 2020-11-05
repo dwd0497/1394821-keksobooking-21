@@ -34,7 +34,7 @@ const filterByPrice = (hotel) => {
     return true;
   } else if (housingPriceSelect.value === `low` && hotel.offer.price < 10000) {
     return true;
-  } else if (housingPriceSelect.value === `medium` && hotel.offer.price >= 10000 && hotel.offer.price <= 50000) {
+  } else if (housingPriceSelect.value === `middle` && hotel.offer.price >= 10000 && hotel.offer.price <= 50000) {
     return true;
   } else if (housingPriceSelect.value === `high` && hotel.offer.price > 50000) {
     return true;

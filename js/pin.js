@@ -9,14 +9,15 @@ const Pin = {
   MAX_VERTICAL_COORD: 630,
   CLASS_SECONDARY: `map__pin--secondary`,
   CLASS_ACTIVE: `map__pin--active`,
-  MAX_COUNT: 8,
+  MAX_COUNT: 5,
 };
 
 const pinsElement = document.querySelector(`.map__pins`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 
 let pins = null;
-export let data = [];
+let data = null;
+let filteredData = null;
 let activePin = null;
 
 const movePinTo = (pin, location) => {
@@ -62,7 +63,11 @@ const onMapPinClick = (evt) => {
   const target = evt.currentTarget;
   activePin = target;
   target.classList.add(Pin.CLASS_ACTIVE);
-  showCard(data[target.value]);
+  if (filteredData) {
+    showCard(filteredData[target.value]);
+  } else {
+    showCard(data[target.value]);
+  }
 };
 
 const onMapPinKeydown = (evt) => {
@@ -78,5 +83,6 @@ const onMapPinKeydown = (evt) => {
 export const updatePins = (cb) => {
   removePins();
   removeOldCard();
-  pins = renderAndGetElements(cb(data), pinsElement, createPin, Pin.MAX_COUNT);
+  filteredData = cb(data);
+  pins = renderAndGetElements(filteredData, pinsElement, createPin, Pin.MAX_COUNT);
 };
