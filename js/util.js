@@ -29,7 +29,7 @@ export const renderAndGetElements = (elements, containerElement, renderElement, 
   const fragment = document.createDocumentFragment();
   let currentElements = [];
   if (maxElenetCount) {
-    elements = elements.slice(0, 5);
+    elements = elements.slice(0, maxElenetCount);
   }
   elements.forEach((element, i) => {
     const currentElement = renderElement(element, i);

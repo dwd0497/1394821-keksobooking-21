@@ -9,7 +9,7 @@ const Pin = {
   MAX_VERTICAL_COORD: 630,
   CLASS_SECONDARY: `map__pin--secondary`,
   CLASS_ACTIVE: `map__pin--active`,
-  MAX_COUNT: 5,
+  MAX_COUNT: 8,
 };
 
 const pinsElement = document.querySelector(`.map__pins`);
