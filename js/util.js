@@ -25,9 +25,12 @@ export const renderElements = (elements, containerElement, renderElement) => {
   containerElement.appendChild(fragment);
 };
 
-export const renderAndGetElements = (elements, containerElement, renderElement) => {
+export const renderAndGetElements = (elements, containerElement, renderElement, maxElenetCount = null) => {
   const fragment = document.createDocumentFragment();
   let currentElements = [];
+  if (maxElenetCount) {
+    elements = elements.slice(0, 5);
+  }
   elements.forEach((element, i) => {
     const currentElement = renderElement(element, i);
     fragment.appendChild(currentElement);
