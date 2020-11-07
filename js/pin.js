@@ -83,6 +83,6 @@ const onMapPinKeydown = (evt) => {
 export const updatePins = (cb) => {
   removePins();
   removeOldCard();
-  filteredData = cb(data);
-  pins = renderAndGetElements(filteredData, pinsElement, createPin, Pin.MAX_COUNT);
+  filteredData = cb(data, Pin.MAX_COUNT);
+  pins = renderAndGetElements(filteredData, pinsElement, createPin);
 };

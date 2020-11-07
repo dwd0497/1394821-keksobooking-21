@@ -1,8 +1,9 @@
 import {updatePins} from "./pin.js";
+import {filter} from "./util.js";
 
 const Prices = {
   CHEAP: 10000,
-  EXPANSEIVE: 50000,
+  EXPENSIVE: 50000,
 };
 
 const housingTypeSelect = document.querySelector(`#housing-type`);
@@ -10,43 +11,32 @@ const housingPriceSelect = document.querySelector(`#housing-price`);
 
 
 const onHousingTypeSelectChange = () => {
-  updatePins(filterHotels);
+  updatePins(filterByType);
 };
 
 const onHousingPriceSelectChange = () => {
-  updatePins(filterHotels);
+  updatePins(filterByPrice);
 };
 
-const filterHotels = (data) => {
-  return data.filter((hotel) => {
-    return filterByType(hotel);
-  }).filter((hotel) => {
-    return filterByPrice(hotel);
-  });
+const filterByType = (data, maxCount) => {
+  return filter(data, (hotel) => filterByTypeСondition(hotel), maxCount);
 };
 
-const filterByType = (hotel) => {
-  if (housingTypeSelect.value === `any`) {
-    return true;
-  } else if (housingTypeSelect.value === hotel.offer.type) {
-    return true;
-  }
-  return false;
+const filterByTypeСondition = (hotel) => {
+  return housingTypeSelect.value === `any` || housingTypeSelect.value === hotel.offer.type;
 };
 
-const filterByPrice = (hotel) => {
-  if (housingPriceSelect.value === `any`) {
-    return true;
-  } else if (housingPriceSelect.value === `low` && hotel.offer.price < Prices.CHEAP) {
-    return true;
-  } else if (housingPriceSelect.value === `middle` &&
-    hotel.offer.price >= Prices.CHEAP &&
-    hotel.offer.price <= Prices.EXPANSEIVE) {
-    return true;
-  } else if (housingPriceSelect.value === `high` && hotel.offer.price > Prices.EXPANSEIVE) {
-    return true;
-  }
-  return false;
+const filterByPrice = (data, maxCount) => {
+  return filter(data, (hotel) => filterByPriceСondition(hotel), maxCount);
+};
+
+const filterByPriceСondition = (hotel) => {
+  return housingPriceSelect.value === `any` ||
+    housingPriceSelect.value === `low` && hotel.offer.price < Prices.CHEAP ||
+    (housingPriceSelect.value === `middle` &&
+      hotel.offer.price >= Prices.CHEAP &&
+      hotel.offer.price <= Prices.EXPENSIVE) ||
+    housingPriceSelect.value === `high` && hotel.offer.price > Prices.EXPENSIVE;
 };
 
 const changeFiltersEventsState = (type) => {
