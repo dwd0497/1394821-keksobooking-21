@@ -36,9 +36,9 @@ export const runPinMovement = (evt, mainPin, mainPinLegHeight) => {
       return MainPinPosition.MAX_HORIZONTAL - getMainPinHeight();
     };
 
-    if (mainPin.offsetTop <= getMinMainPinYCoord()) {
+    if (mainPin.offsetTop < getMinMainPinYCoord()) {
       mainPin.style.top = `${getMinMainPinYCoord()}px`;
-    } else if (mainPin.offsetTop >= getMaxMainPinYCoord()) {
+    } else if (mainPin.offsetTop > getMaxMainPinYCoord()) {
       mainPin.style.top = `${getMaxMainPinYCoord()}px`;
     } else {
       mainPin.style.top = (mainPin.offsetTop - shift.y) + `px`;

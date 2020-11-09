@@ -9,10 +9,15 @@ const Prices = {
 const currentFilterState = {
   "housing-type": `any`,
   "housing-price": `any`,
+  "housing-rooms": `any`,
+  "housing-guests": `any`,
 };
 
-const housingTypeSelect = document.querySelector(`#housing-type`);
-const housingPriceSelect = document.querySelector(`#housing-price`);
+const mapFiltersElement = document.querySelector(`.map__filters`);
+const housingTypeSelect = mapFiltersElement.querySelector(`#housing-type`);
+const housingPriceSelect = mapFiltersElement.querySelector(`#housing-price`);
+const housingRoomsSelect = mapFiltersElement.querySelector(`#housing-rooms`);
+const housingGuestsSelect = mapFiltersElement.querySelector(`#housing-guests`);
 
 const isAny = function (value) {
   return value === `any`;
@@ -30,29 +35,42 @@ const filterByPriceСondition = function (value, currentValue) {
     currentValue === `high` && value > Prices.EXPENSIVE;
 };
 
+const filterByRoomsСondition = function (value, currentValue) {
+  return isAny(currentValue) || value === +currentValue;
+};
+
+const filterByGuestsСondition = function (value, currentValue) {
+  return isAny(currentValue) || value === +currentValue;
+};
+
 const getFiltered = function (data, maxCount) {
   return filter(data, (hotel) => {
     return filterByTypeСondition(hotel.offer.type, currentFilterState[`housing-type`]) &&
-      filterByPriceСondition(hotel.offer.price, currentFilterState[`housing-price`]);
+      filterByPriceСondition(hotel.offer.price, currentFilterState[`housing-price`]) &&
+      filterByRoomsСondition(hotel.offer.rooms, currentFilterState[`housing-rooms`]) &&
+      filterByGuestsСondition(hotel.offer.guests, currentFilterState[`housing-guests`]);
   }, maxCount);
 };
 
-const onHousingTypeSelectChange = function (evt) {
+const onSelectChange = function (evt) {
   currentFilterState[evt.target.name] = evt.target.value;
-
-  updatePins(getFiltered);
-};
-
-const onHousingPriceSelectChange = function (evt) {
-  currentFilterState[evt.target.name] = evt.target.value;
-
   updatePins(getFiltered);
 };
 
 const changeFiltersEventsState = (type) => {
   const method = type ? `addEventListener` : `removeEventListener`;
-  housingTypeSelect[method](`change`, onHousingTypeSelectChange);
-  housingPriceSelect[method](`change`, onHousingPriceSelectChange);
+  housingTypeSelect[method](`change`, onSelectChange);
+  housingPriceSelect[method](`change`, onSelectChange);
+  housingRoomsSelect[method](`change`, onSelectChange);
+  housingGuestsSelect[method](`change`, onSelectChange);
+};
+
+const resetCurrentFilterState = () => {
+  for (let key in currentFilterState) {
+    if (currentFilterState.hasOwnProperty(key)) {
+      currentFilterState[key] = `any`;
+    }
+  }
 };
 
 export const activateFilters = () => {
@@ -61,4 +79,6 @@ export const activateFilters = () => {
 
 export const deactivateFilters = () => {
   changeFiltersEventsState(false);
+  resetCurrentFilterState();
+  mapFiltersElement.reset();
 };

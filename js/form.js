@@ -101,7 +101,7 @@ const onEscPress = (popup) => {
     if (!isEscape(evt)) {
       return;
     } else {
-      document.remove(`keydown`, onEscPress(popup));
+      document.removeEventListener(`keydown`, onEscPress(popup));
       popup.remove();
     }
   };
