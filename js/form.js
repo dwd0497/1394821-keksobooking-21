@@ -87,7 +87,6 @@ const onFormSubmit = (evt) => {
 
   if (adformCapacityInput.checkValidity() && adformRoomNumberInput.checkValidity()) {
     sendData(onSuccess, onError, new FormData(adformElement));
-    adformElement.reset();
   }
 };
 
@@ -135,6 +134,7 @@ const showErrorPopup = (errorMessage) => {
 const onSuccess = () => {
   showSuccessPopup();
   addInactiveState();
+  adformElement.reset();
 };
 
 const onError = (errorMessage) => {

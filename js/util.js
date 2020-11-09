@@ -71,13 +71,12 @@ export const getRandomSlice = (elements) => {
 
 export const forEach = (elements, cb) => Array.prototype.forEach.call(elements, cb);
 
+export const map = (elements, cb) => Array.prototype.map.call(elements, cb);
+
 export const filter = (elements, cb, count) => {
   const outElements = [];
-  // Помещаем дополнительное условие выхода из цикла
   for (let i = 0; i < elements.length && outElements.length !== count; i++) {
     const element = elements[i];
-    // Оригинальный фильтр, в cb передает элемент, индекс и массив
-    // сделаем также, для переносимости функций-колбэков между нашей и оригинальной реализациями
     if (!cb(element, i, elements)) {
       continue;
     }

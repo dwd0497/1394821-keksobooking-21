@@ -6,37 +6,47 @@ const Prices = {
   EXPENSIVE: 50000,
 };
 
+const currentFilterState = {
+  "housing-type": `any`,
+  "housing-price": `any`,
+};
+
 const housingTypeSelect = document.querySelector(`#housing-type`);
 const housingPriceSelect = document.querySelector(`#housing-price`);
 
-
-const onHousingTypeSelectChange = () => {
-  updatePins(filterByType);
+const isAny = function (value) {
+  return value === `any`;
 };
 
-const onHousingPriceSelectChange = () => {
-  updatePins(filterByPrice);
+const filterByTypeСondition = function (value, currentValue) {
+  return isAny(currentValue) || value === currentValue;
 };
 
-const filterByType = (data, maxCount) => {
-  return filter(data, (hotel) => filterByTypeСondition(hotel), maxCount);
+const filterByPriceСondition = function (value, currentValue) {
+  return isAny(currentValue) || currentValue === `low` && value < Prices.CHEAP ||
+    (currentValue === `middle` &&
+      value >= Prices.CHEAP &&
+      value <= Prices.EXPENSIVE) ||
+    currentValue === `high` && value > Prices.EXPENSIVE;
 };
 
-const filterByTypeСondition = (hotel) => {
-  return housingTypeSelect.value === `any` || housingTypeSelect.value === hotel.offer.type;
+const getFiltered = function (data, maxCount) {
+  return filter(data, (hotel) => {
+    return filterByTypeСondition(hotel.offer.type, currentFilterState[`housing-type`]) &&
+      filterByPriceСondition(hotel.offer.price, currentFilterState[`housing-price`]);
+  }, maxCount);
 };
 
-const filterByPrice = (data, maxCount) => {
-  return filter(data, (hotel) => filterByPriceСondition(hotel), maxCount);
+const onHousingTypeSelectChange = function (evt) {
+  currentFilterState[evt.target.name] = evt.target.value;
+
+  updatePins(getFiltered);
 };
 
-const filterByPriceСondition = (hotel) => {
-  return housingPriceSelect.value === `any` ||
-    housingPriceSelect.value === `low` && hotel.offer.price < Prices.CHEAP ||
-    (housingPriceSelect.value === `middle` &&
-      hotel.offer.price >= Prices.CHEAP &&
-      hotel.offer.price <= Prices.EXPENSIVE) ||
-    housingPriceSelect.value === `high` && hotel.offer.price > Prices.EXPENSIVE;
+const onHousingPriceSelectChange = function (evt) {
+  currentFilterState[evt.target.name] = evt.target.value;
+
+  updatePins(getFiltered);
 };
 
 const changeFiltersEventsState = (type) => {
@@ -52,5 +62,3 @@ export const activateFilters = () => {
 export const deactivateFilters = () => {
   changeFiltersEventsState(false);
 };
-
-
