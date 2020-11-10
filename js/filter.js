@@ -1,5 +1,6 @@
 import {updatePins} from "./pin.js";
 import {filter} from "./util.js";
+import {debounce} from "./debounce.js";
 
 const Prices = {
   CHEAP: 10000,
@@ -65,19 +66,19 @@ const getFiltered = (data, maxCount) => {
   }, maxCount);
 };
 
-const onSelectChange = (evt) => {
+const onSelectChange = debounce((evt) => {
   currentFilterState[evt.target.name] = evt.target.value;
   updatePins(getFiltered);
-};
+});
 
-const onhousingFeaturesChange = (evt) => {
+const onhousingFeaturesChange = debounce((evt) => {
   if (selectedFeatures.has(evt.target)) {
     selectedFeatures.delete(evt.target);
   } else {
     selectedFeatures.add(evt.target);
   }
   updatePins(getFiltered);
-};
+});
 
 const changeFiltersEventsState = (type) => {
   const method = type ? `addEventListener` : `removeEventListener`;
