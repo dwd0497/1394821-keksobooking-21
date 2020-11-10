@@ -25,9 +25,12 @@ export const renderElements = (elements, containerElement, renderElement) => {
   containerElement.appendChild(fragment);
 };
 
-export const renderAndGetElements = (elements, containerElement, renderElement) => {
+export const renderAndGetElements = (elements, containerElement, renderElement, maxElenetCount = null) => {
   const fragment = document.createDocumentFragment();
   let currentElements = [];
+  if (maxElenetCount) {
+    elements = elements.slice(0, maxElenetCount);
+  }
   elements.forEach((element, i) => {
     const currentElement = renderElement(element, i);
     fragment.appendChild(currentElement);
@@ -67,3 +70,17 @@ export const getRandomSlice = (elements) => {
 };
 
 export const forEach = (elements, cb) => Array.prototype.forEach.call(elements, cb);
+
+export const map = (elements, cb) => Array.prototype.map.call(elements, cb);
+
+export const filter = (elements, cb, count) => {
+  const outElements = [];
+  for (let i = 0; i < elements.length && outElements.length !== count; i++) {
+    const element = elements[i];
+    if (!cb(element, i, elements)) {
+      continue;
+    }
+    outElements.push(element);
+  }
+  return outElements;
+};

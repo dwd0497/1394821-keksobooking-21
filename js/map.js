@@ -4,6 +4,7 @@ import {getMainpinXCoord, getMainpinYCoord} from "./main-pin.js";
 import {fillAdresInput} from "./form.js";
 import {renderPins, removePins} from "./pin.js";
 import {removeOldCard} from "./card.js";
+import {activateFilters, deactivateFilters} from "./filter.js";
 
 const map = document.querySelector(`.map`);
 
@@ -11,6 +12,7 @@ export const removeInactiveState = (hotels) => {
   map.classList.remove(`map--faded`);
   renderPins(hotels);
   activateForm();
+  activateFilters();
 };
 
 export const addInactiveState = () => {
@@ -18,6 +20,8 @@ export const addInactiveState = () => {
   removePins();
   removeOldCard();
   deactivateForm();
+  getFillAdressInput();
+  deactivateFilters();
 };
 
 // setTimeout(addInactiveState, 5000); // Для проверки активации неактивного состония

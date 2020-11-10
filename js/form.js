@@ -1,5 +1,7 @@
-import {forEach} from "./util.js";
+import {forEach, isEscape} from "./util.js";
 import {Validattion} from "./texts.js";
+import {addInactiveState, getFillAdressInput} from "./map.js";
+import {sendData} from "./xhrs.js";
 
 const minPrices = {
   bungalow: 0,
@@ -8,6 +10,7 @@ const minPrices = {
   palace: 10000
 };
 
+const mainElement = document.querySelector(`main`);
 const adformElement = document.querySelector(`.ad-form`);
 const adformAdressInput = adformElement.querySelector(`#address`);
 const adformCapacityInput = adformElement.querySelector(`#capacity`);
@@ -17,6 +20,9 @@ const adformPriceInput = adformElement.querySelector(`#price`);
 const adformTimeinInput = adformElement.querySelector(`#timein`);
 const adformTimeoutInput = adformElement.querySelector(`#timeout`);
 const filtersFormElement = document.querySelector(`.map__filters`);
+const adformResetBtnElement = document.querySelector(`.ad-form__reset`);
+const successTemplate = document.querySelector(`#success`).content.querySelector(`.success`);
+const errorTemplate = document.querySelector(`#error`).content.querySelector(`.error`);
 
 // Управление состоянием форм
 
@@ -30,6 +36,7 @@ toggleFormElementsState(adformElement.children, true);
 toggleFormElementsState(filtersFormElement.children, true);
 
 // Валидация
+
 
 const validateGuestsAndRooms = (rooms, guests, element) => {
   if (rooms === 100 && guests !== 0) {
@@ -55,7 +62,7 @@ const onAdformInputRoomNumberChange = () => {
   const guests = +adformCapacityInput.value;
   const rooms = +adformRoomNumberInput.value;
 
-  validateGuestsAndRooms(rooms, guests, adformRoomNumberInput);
+  validateGuestsAndRooms(rooms, guests, adformCapacityInput);
 };
 
 const onTypeInputChange = () => {
@@ -71,6 +78,69 @@ const onTimeoutInputChange = () => {
   adformTimeinInput.value = adformTimeoutInput.value;
 };
 
+const onFormSubmit = (evt) => {
+  evt.preventDefault();
+
+  const guests = +adformCapacityInput.value;
+  const rooms = +adformRoomNumberInput.value;
+  validateGuestsAndRooms(rooms, guests, adformCapacityInput);
+
+  if (adformCapacityInput.checkValidity() && adformRoomNumberInput.checkValidity()) {
+    sendData(onSuccess, onError, new FormData(adformElement));
+  }
+};
+
+const onPopupClick = (popup) => {
+  return () => {
+    popup.remove();
+  };
+};
+
+const onEscPress = (popup) => {
+  return (evt) => {
+    if (!isEscape(evt)) {
+      return;
+    } else {
+      document.removeEventListener(`keydown`, onEscPress(popup));
+      popup.remove();
+    }
+  };
+};
+
+const showSuccessPopup = () => {
+  const successPopup = successTemplate.cloneNode(true);
+  adformElement.appendChild(successPopup);
+  successPopup.addEventListener(`click`, onPopupClick(successPopup));
+  document.addEventListener(`keydown`, onEscPress(successPopup));
+};
+
+const onErrorPopupBtnClick = (errorPopup) => {
+  return () => {
+    errorPopup.remove();
+  };
+};
+
+const showErrorPopup = (errorMessage) => {
+  const errorPopup = errorTemplate.cloneNode(true);
+  const errorMessageElement = errorPopup.querySelector(`.error__message`);
+  const errorPopupBtn = errorPopup.querySelector(`.error__button`);
+  errorMessageElement.textContent = errorMessage;
+  mainElement.appendChild(errorPopup);
+  errorPopup.addEventListener(`click`, onPopupClick(errorPopup));
+  errorPopupBtn.addEventListener(`click`, onErrorPopupBtnClick(errorPopup));
+  document.addEventListener(`keydown`, onEscPress(errorPopup));
+};
+
+const onSuccess = () => {
+  showSuccessPopup();
+  addInactiveState();
+  adformElement.reset();
+};
+
+const onError = (errorMessage) => {
+  showErrorPopup(errorMessage);
+};
+
 const changeFormInputsEventsState = (type) => {
   const method = type ? `addEventListener` : `removeEventListener`;
   adformCapacityInput[method](`change`, onAdformInputCapacityChange);
@@ -78,6 +148,7 @@ const changeFormInputsEventsState = (type) => {
   adformTypeInput[method](`change`, onTypeInputChange);
   adformTimeinInput[method](`change`, onTimeinInputChange);
   adformTimeoutInput[method](`change`, onTimeoutInputChange);
+  adformElement[method](`submit`, onFormSubmit);
 };
 
 export const activateForm = () => {
@@ -85,6 +156,7 @@ export const activateForm = () => {
   toggleFormElementsState(adformElement.children, false);
   toggleFormElementsState(filtersFormElement.children, false);
   changeFormInputsEventsState(true);
+  adformResetBtnElement.addEventListener(`click`, onAdformResetBtnClick);
 };
 
 export const deactivateForm = () => {
@@ -92,8 +164,16 @@ export const deactivateForm = () => {
   toggleFormElementsState(adformElement.children, true);
   toggleFormElementsState(filtersFormElement.children, true);
   changeFormInputsEventsState(false);
+  adformResetBtnElement.removeEventListener(`click`, onAdformResetBtnClick);
 };
 
 export const fillAdresInput = (x, y) => {
   adformAdressInput.value = `${x}, ${y}`;
+};
+
+
+const onAdformResetBtnClick = (evt) => {
+  evt.preventDefault();
+  adformElement.reset();
+  getFillAdressInput();
 };
