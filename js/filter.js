@@ -1,6 +1,6 @@
 import {updatePins} from "./pin.js";
 import {filter} from "./util.js";
-import {debounce} from "./debounce.js";
+import {debounce} from "./util.js";
 
 const Prices = {
   CHEAP: 10000,
