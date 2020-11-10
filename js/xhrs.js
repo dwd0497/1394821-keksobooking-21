@@ -13,6 +13,11 @@ const Method = {
   POST: `POST`,
 };
 
+const Server = {
+  LOAD: `https://21.javascript.pages.academy/keksobooking/data`,
+  SEND: `https://21.javascript.pages.academy/keksobooking`,
+};
+
 const errorCodes = {
   400: XHRErrorMessage.INVALID_REQUEST,
   401: XHRErrorMessage.AUTHORIZATION_ERROR,
@@ -20,8 +25,6 @@ const errorCodes = {
   500: XHRErrorMessage.SERVER_ERROR,
 };
 
-const LOADDATASERVER = `https://21.javascript.pages.academy/keksobooking/data`;
-const SENDDATASERVER = `https://21.javascript.pages.academy/keksobooking`;
 const TIMEOUT_IN_MS = 10000;
 
 const createXHR = (url, onSuccess, onError, method = Method.GET, data = null) => {
@@ -52,10 +55,10 @@ const createXHR = (url, onSuccess, onError, method = Method.GET, data = null) =>
 };
 
 export const loadData = (onSuccess, onError) => {
-  createXHR(LOADDATASERVER, onSuccess, onError);
+  createXHR(Server.LOAD, onSuccess, onError);
 };
 
 export const sendData = (onSuccess, onError, data) => {
-  createXHR(SENDDATASERVER, onSuccess, onError, Method.POST, data);
+  createXHR(Server.SEND, onSuccess, onError, Method.POST, data);
 };
 

@@ -1,16 +1,10 @@
 import {updatePins} from "./pin.js";
 import {filter} from "./util.js";
+import {debounce} from "./debounce.js";
 
 const Prices = {
   CHEAP: 10000,
   EXPENSIVE: 50000,
-};
-
-const currentFilterState = {
-  "housing-type": `any`,
-  "housing-price": `any`,
-  "housing-rooms": `any`,
-  "housing-guests": `any`,
 };
 
 const mapFiltersElement = document.querySelector(`.map__filters`);
@@ -20,9 +14,22 @@ const housingRoomsSelect = mapFiltersElement.querySelector(`#housing-rooms`);
 const housingGuestsSelect = mapFiltersElement.querySelector(`#housing-guests`);
 const housingFeatures = mapFiltersElement.querySelector(`#housing-features`);
 
+
+const createInitialFilters = () => {
+  return {
+    "housing-type": `any`,
+    "housing-price": `any`,
+    "housing-rooms": `any`,
+    "housing-guests": `any`
+  };
+};
+
+const selectedFeatures = new Set();
+
+const currentFilterState = createInitialFilters();
+
 const filterByFeatures = (features) => {
-  const featuresCheckedElements = Array.from(housingFeatures.querySelectorAll(`input[type="checkbox"]:checked`));
-  return featuresCheckedElements.every((feature) => features.includes(feature.value));
+  return [...selectedFeatures].every((feature) => features.includes(feature.value));
 };
 
 const isAny = function (value) {
@@ -59,14 +66,19 @@ const getFiltered = (data, maxCount) => {
   }, maxCount);
 };
 
-const onSelectChange = (evt) => {
+const onSelectChange = debounce((evt) => {
   currentFilterState[evt.target.name] = evt.target.value;
   updatePins(getFiltered);
-};
+});
 
-const onhousingFeaturesChamge = () => {
+const onhousingFeaturesChange = debounce((evt) => {
+  if (selectedFeatures.has(evt.target)) {
+    selectedFeatures.delete(evt.target);
+  } else {
+    selectedFeatures.add(evt.target);
+  }
   updatePins(getFiltered);
-};
+});
 
 const changeFiltersEventsState = (type) => {
   const method = type ? `addEventListener` : `removeEventListener`;
@@ -74,15 +86,12 @@ const changeFiltersEventsState = (type) => {
   housingPriceSelect[method](`change`, onSelectChange);
   housingRoomsSelect[method](`change`, onSelectChange);
   housingGuestsSelect[method](`change`, onSelectChange);
-  housingFeatures[method](`change`, onhousingFeaturesChamge);
+  housingFeatures[method](`change`, onhousingFeaturesChange);
 };
 
 const resetCurrentFilterState = () => {
-  for (let key in currentFilterState) {
-    if (currentFilterState.hasOwnProperty(key)) {
-      currentFilterState[key] = `any`;
-    }
-  }
+  Object.assign(currentFilterState, createInitialFilters());
+  selectedFeatures.clear();
 };
 
 export const activateFilters = () => {
