@@ -6,13 +6,6 @@ const Prices = {
   EXPENSIVE: 50000,
 };
 
-const currentFilterState = {
-  "housing-type": `any`,
-  "housing-price": `any`,
-  "housing-rooms": `any`,
-  "housing-guests": `any`,
-};
-
 const mapFiltersElement = document.querySelector(`.map__filters`);
 const housingTypeSelect = mapFiltersElement.querySelector(`#housing-type`);
 const housingPriceSelect = mapFiltersElement.querySelector(`#housing-price`);
@@ -20,9 +13,22 @@ const housingRoomsSelect = mapFiltersElement.querySelector(`#housing-rooms`);
 const housingGuestsSelect = mapFiltersElement.querySelector(`#housing-guests`);
 const housingFeatures = mapFiltersElement.querySelector(`#housing-features`);
 
+
+const createInitialFilters = () => {
+  return {
+    "housing-type": `any`,
+    "housing-price": `any`,
+    "housing-rooms": `any`,
+    "housing-guests": `any`
+  };
+};
+
+const selectedFeatures = new Set();
+
+const currentFilterState = createInitialFilters();
+
 const filterByFeatures = (features) => {
-  const featuresCheckedElements = Array.from(housingFeatures.querySelectorAll(`input[type="checkbox"]:checked`));
-  return featuresCheckedElements.every((feature) => features.includes(feature.value));
+  return [...selectedFeatures].every((feature) => features.includes(feature.value));
 };
 
 const isAny = function (value) {
@@ -64,7 +70,12 @@ const onSelectChange = (evt) => {
   updatePins(getFiltered);
 };
 
-const onhousingFeaturesChamge = () => {
+const onhousingFeaturesChange = (evt) => {
+  if (selectedFeatures.has(evt.target)) {
+    selectedFeatures.delete(evt.target);
+  } else {
+    selectedFeatures.add(evt.target);
+  }
   updatePins(getFiltered);
 };
 
@@ -74,15 +85,12 @@ const changeFiltersEventsState = (type) => {
   housingPriceSelect[method](`change`, onSelectChange);
   housingRoomsSelect[method](`change`, onSelectChange);
   housingGuestsSelect[method](`change`, onSelectChange);
-  housingFeatures[method](`change`, onhousingFeaturesChamge);
+  housingFeatures[method](`change`, onhousingFeaturesChange);
 };
 
 const resetCurrentFilterState = () => {
-  for (let key in currentFilterState) {
-    if (currentFilterState.hasOwnProperty(key)) {
-      currentFilterState[key] = `any`;
-    }
-  }
+  Object.assign(currentFilterState, createInitialFilters());
+  selectedFeatures.clear();
 };
 
 export const activateFilters = () => {
