@@ -14,8 +14,8 @@ const Method = {
 };
 
 const Server = {
-  LOADDATA: `https://21.javascript.pages.academy/keksobooking/data`,
-  SENDDATA: `https://21.javascript.pages.academy/keksobooking`,
+  LOAD: `https://21.javascript.pages.academy/keksobooking/data`,
+  SEND: `https://21.javascript.pages.academy/keksobooking`,
 };
 
 const errorCodes = {
@@ -55,10 +55,10 @@ const createXHR = (url, onSuccess, onError, method = Method.GET, data = null) =>
 };
 
 export const loadData = (onSuccess, onError) => {
-  createXHR(Server.LOADDATA, onSuccess, onError);
+  createXHR(Server.LOAD, onSuccess, onError);
 };
 
 export const sendData = (onSuccess, onError, data) => {
-  createXHR(Server.SENDDATA, onSuccess, onError, Method.POST, data);
+  createXHR(Server.SEND, onSuccess, onError, Method.POST, data);
 };
 
