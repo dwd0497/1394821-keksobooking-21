@@ -2,6 +2,7 @@ import {forEach, isEscape} from "./util.js";
 import {Validattion} from "./texts.js";
 import {addInactiveState, getFillAdressInput} from "./map.js";
 import {sendData} from "./xhrs.js";
+import {getImagePreview} from "./imagePreview.js";
 
 const minPrices = {
   bungalow: 0,
@@ -23,8 +24,13 @@ const filtersFormElement = document.querySelector(`.map__filters`);
 const adformResetBtnElement = document.querySelector(`.ad-form__reset`);
 const successTemplate = document.querySelector(`#success`).content.querySelector(`.success`);
 const errorTemplate = document.querySelector(`#error`).content.querySelector(`.error`);
+const avatarInput = document.querySelector(`#avatar`);
+const avatarPreviewElement = document.querySelector(`.ad-form-header__preview img`);
+const hotelPhotoInput = document.querySelector(`#images`);
+const hotelPhotoPreviewElement = document.querySelector(`.ad-form__photo`);
 
 // Управление состоянием форм
+
 
 const toggleFormElementsState = (formElements, isDisabled) => {
   forEach(formElements, function (element) {
@@ -36,7 +42,6 @@ toggleFormElementsState(adformElement.children, true);
 toggleFormElementsState(filtersFormElement.children, true);
 
 // Валидация
-
 
 const validateGuestsAndRooms = (rooms, guests, element) => {
   if (rooms === 100 && guests !== 0) {
@@ -157,6 +162,8 @@ export const activateForm = () => {
   toggleFormElementsState(filtersFormElement.children, false);
   changeFormInputsEventsState(true);
   adformResetBtnElement.addEventListener(`click`, onAdformResetBtnClick);
+  getImagePreview(avatarInput, avatarPreviewElement, true);
+  getImagePreview(hotelPhotoInput, hotelPhotoPreviewElement, true);
 };
 
 export const deactivateForm = () => {
@@ -165,6 +172,8 @@ export const deactivateForm = () => {
   toggleFormElementsState(filtersFormElement.children, true);
   changeFormInputsEventsState(false);
   adformResetBtnElement.removeEventListener(`click`, onAdformResetBtnClick);
+  getImagePreview(avatarInput, avatarPreviewElement, false);
+  getImagePreview(hotelPhotoInput, hotelPhotoPreviewElement, false);
 };
 
 export const fillAdresInput = (x, y) => {
