@@ -1,10 +1,19 @@
-import {forEach} from "./util.js";
+import {forEach, removeChildren} from "./util.js";
 
 const FILE_TYPES = [`gif`, `jpg`, `jpeg`, `png`];
 const IMG_TAG_NAME = `IMG`;
+const AVATAR_PREVIEW = `img/muffin-grey.svg`;
 
 const getImgElement = () => {
   return document.createElement(`img`);
+};
+
+export const clearPreviewElement = (preview) => {
+  if (preview.tagName !== IMG_TAG_NAME) {
+    removeChildren(preview);
+  } else {
+    preview.src = AVATAR_PREVIEW;
+  }
 };
 
 export const getImagePreview = (input, preview, type) => {
