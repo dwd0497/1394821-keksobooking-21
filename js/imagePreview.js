@@ -1,3 +1,5 @@
+import {forEach} from "./util.js";
+
 const FILE_TYPES = [`gif`, `jpg`, `jpeg`, `png`];
 const IMG_TAG_NAME = `IMG`;
 
@@ -10,7 +12,7 @@ const createAndRenderImgElement = (parentElement) => {
 export const getImagePreview = (input, preview, type) => {
   const method = type ? `addEventListener` : `removeEventListener`;
   input[method](`change`, () => {
-    Array.from(input.files).forEach((file) => {
+    forEach(input.files, (file) => {
       const fileName = file.name.toLowerCase();
 
       const matches = FILE_TYPES.some((fileType) => {
@@ -30,6 +32,5 @@ export const getImagePreview = (input, preview, type) => {
         reader.readAsDataURL(file);
       }
     });
-
   });
 };
