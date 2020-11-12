@@ -18,7 +18,6 @@ export const debounce = (cb) => {
   };
 };
 
-
 export function isEnter(evt) {
   return evt.key === СontrolButtons.ENTER;
 }

@@ -2,7 +2,7 @@ import {forEach, isEscape} from "./util.js";
 import {Validattion} from "./texts.js";
 import {addInactiveState, getFillAdressInput} from "./map.js";
 import {sendData} from "./xhrs.js";
-import {getImagePreview} from "./imagePreview.js";
+import {getImagePreview, clearPreviewElement} from "./imagePreview.js";
 
 const minPrices = {
   bungalow: 0,
@@ -29,9 +29,6 @@ const avatarPreviewElement = document.querySelector(`.ad-form-header__preview im
 const hotelPhotoInput = document.querySelector(`#images`);
 const hotelPhotoPreviewElement = document.querySelector(`.ad-form__photo`);
 
-// Управление состоянием форм
-
-
 const toggleFormElementsState = (formElements, isDisabled) => {
   forEach(formElements, function (element) {
     element.disabled = isDisabled;
@@ -41,7 +38,6 @@ const toggleFormElementsState = (formElements, isDisabled) => {
 toggleFormElementsState(adformElement.children, true);
 toggleFormElementsState(filtersFormElement.children, true);
 
-// Валидация
 
 const validateGuestsAndRooms = (rooms, guests, element) => {
   if (rooms === 100 && guests !== 0) {
@@ -140,6 +136,7 @@ const onSuccess = () => {
   showSuccessPopup();
   addInactiveState();
   adformElement.reset();
+  getFillAdressInput();
 };
 
 const onError = (errorMessage) => {
@@ -174,12 +171,13 @@ export const deactivateForm = () => {
   adformResetBtnElement.removeEventListener(`click`, onAdformResetBtnClick);
   getImagePreview(avatarInput, avatarPreviewElement, false);
   getImagePreview(hotelPhotoInput, hotelPhotoPreviewElement, false);
+  clearPreviewElement(avatarPreviewElement);
+  clearPreviewElement(hotelPhotoPreviewElement);
 };
 
 export const fillAdresInput = (x, y) => {
   adformAdressInput.value = `${x}, ${y}`;
 };
-
 
 const onAdformResetBtnClick = (evt) => {
   evt.preventDefault();
