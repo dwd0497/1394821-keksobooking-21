@@ -15,6 +15,7 @@ const hotelTypes = {
   house: `Дом`
 };
 
+let deleteActiveClass = null;
 let currentCard = null;
 
 const createСard = (hotel) => {
@@ -122,15 +123,16 @@ const renderCard = (card) => {
 const onEscPress = (evt) => {
   if (!isEscape(evt)) {
     return;
-  } else {
-    changeCardEventsState(false, currentCard);
-    removeOldCard();
   }
+  changeCardEventsState(false, currentCard);
+  removeOldCard();
+  deleteActiveClass();
 };
 
 const onCardCloseBtnClick = () => {
   changeCardEventsState(false, currentCard);
   removeOldCard();
+  deleteActiveClass();
 };
 
 export const removeOldCard = () => {
@@ -149,7 +151,8 @@ const changeCardEventsState = (type, cardElement) => {
   }
 };
 
-export const showCard = (data) => {
+export const showCard = (data, deletePinActiveClass) => {
+  deleteActiveClass = deletePinActiveClass;
   removeOldCard();
   currentCard = renderCard(data);
 };

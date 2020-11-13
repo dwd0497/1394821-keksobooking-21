@@ -63,18 +63,17 @@ const onMapPinClick = (evt) => {
   activePin = target;
   target.classList.add(Pin.CLASS_ACTIVE);
   if (filteredData) {
-    showCard(filteredData[target.value]);
+    showCard(filteredData[target.value], deletePinActiveClass);
   } else {
-    showCard(data[target.value]);
+    showCard(data[target.value], deletePinActiveClass);
   }
 };
 
 const onMapPinKeydown = (evt) => {
   if (!isEnter(evt)) {
     return;
-  } else {
-    onMapPinClick(evt);
   }
+  onMapPinClick(evt);
 };
 
 export const updatePins = (cb) => {

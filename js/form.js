@@ -1,20 +1,16 @@
 import {create as createEmitter} from "./events.js";
 import {forEach, isEscape} from "./util.js";
-import {Validattion} from "./texts.js";
 import {sendData} from "./xhrs.js";
-import {getImagePreview, clearPreviewElement} from "./imagePreview.js";
+import {createOnImageChange, clearPreviewElement} from "./imagePreview.js";
 import {showErrorPopup} from "./errorPopup.js";
-
-export const emitter = createEmitter();
 
 const ROOMS_VALUE_100 = 100;
 const GUESTS_VALUE_0 = 0;
 
-const minPrices = {
-  bungalow: 0,
-  flat: 1000,
-  house: 5000,
-  palace: 10000
+export const Validattion = {
+  ONLY_100_ROOMS: `100 комнат не для гостей`,
+  NOT_FOR_GUESTS: `Не для гостей только 100 комнатные номера`,
+  GUESTS_MORE_THEN_ROOMS: `Количество мест не может превышать количество комнат`,
 };
 
 const mainElement = document.querySelector(`main`);
@@ -33,6 +29,19 @@ const avatarInput = document.querySelector(`#avatar`);
 const avatarPreviewElement = document.querySelector(`.ad-form-header__preview img`);
 const hotelPhotoInput = document.querySelector(`#images`);
 const hotelPhotoPreviewElement = document.querySelector(`.ad-form__photo`);
+
+export const emitter = createEmitter();
+
+// Это не перечисление, это объект для маппинга!
+const minPrices = {
+  bungalow: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
+};
+
+const onAvatarChange = createOnImageChange(avatarPreviewElement);
+const onPhotosChange = createOnImageChange(hotelPhotoPreviewElement);
 
 const toggleFormElementsState = (formElements, isDisabled) => {
   forEach(formElements, function (element) {
@@ -100,7 +109,7 @@ const onFormSubmit = (evt) => {
   }
 };
 
-const onPopupClick = (popup) => {
+const createOnPopupClick = (popup) => {
   return () => {
     popup.remove();
   };
@@ -120,7 +129,7 @@ const createOnEscPress = (popup) => {
 const showSuccessPopup = () => {
   const successPopup = successTemplate.cloneNode(true);
   adformElement.appendChild(successPopup);
-  successPopup.addEventListener(`click`, onPopupClick(successPopup));
+  successPopup.addEventListener(`click`, createOnPopupClick(successPopup));
   document.addEventListener(`keydown`, createOnEscPress(successPopup));
 };
 
@@ -151,8 +160,9 @@ export const activateForm = () => {
   toggleFormElementsState(filtersFormElement.children, false);
   changeFormInputsEventsState(true);
   adformResetBtnElement.addEventListener(`click`, onAdformResetBtnClick);
-  getImagePreview(avatarInput, avatarPreviewElement, true);
-  getImagePreview(hotelPhotoInput, hotelPhotoPreviewElement, true);
+
+  avatarInput.addEventListener(`change`, onAvatarChange);
+  hotelPhotoInput.addEventListener(`change`, onPhotosChange);
 };
 
 export const deactivateForm = () => {
@@ -161,8 +171,8 @@ export const deactivateForm = () => {
   toggleFormElementsState(filtersFormElement.children, true);
   changeFormInputsEventsState(false);
   adformResetBtnElement.removeEventListener(`click`, onAdformResetBtnClick);
-  getImagePreview(avatarInput, avatarPreviewElement, false);
-  getImagePreview(hotelPhotoInput, hotelPhotoPreviewElement, false);
+  avatarInput.removeEventListener(`change`, onAvatarChange);
+  hotelPhotoInput.removeEventListener(`change`, onPhotosChange);
   clearPreviewElement(avatarPreviewElement);
   clearPreviewElement(hotelPhotoPreviewElement);
   emitter.emit(`deactivate`);

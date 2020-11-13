@@ -9,62 +9,55 @@ const MainPinPosition = {
 
 export const emitter = createEmitter();
 
-export const runPinMovement = (evt, mainPin, mainPinLegHeight) => {
-  let startCoords = {
-    x: evt.clientX,
-    y: evt.clientY
+const getCoord = (coord, offset) => {
+  return {
+    x: coord.x - offset.x,
+    y: coord.y - offset.y
+  };
+};
+
+const getAddress = (coord, xDiff, yDiff) => {
+  return {
+    x: Math.floor(coord.x + xDiff),
+    y: Math.floor(coord.y + yDiff)
+  };
+};
+
+const convertAddressToCoord = (address, xDiff, yDiff) => {
+  return getAddress(address, -xDiff, -yDiff);
+};
+
+const pinMove = (pinElement, {x, y}) => {
+  pinElement.style.left = `${x}px`;
+  pinElement.style.top = `${y}px`;
+};
+
+export const runPinMovement = (evt, mainPin, pinLegHeight) => {
+  const rect = mainPin.getBoundingClientRect();
+  const parentRect = mainPin.parentNode.getBoundingClientRect();
+
+  const offset = {
+    x: evt.clientX - rect.x,
+    y: evt.clientY - rect.y
   };
 
+  const xDiff = mainPin.offsetWidth / 2;
+  const yDiff = mainPin.offsetHeight + pinLegHeight;
+
   const onMouseMove = (moveEvt) => {
-    const shift = {
-      x: startCoords.x - moveEvt.clientX,
-      y: startCoords.y - moveEvt.clientY
-    };
+    let coord = getCoord({
+      x: moveEvt.clientX - parentRect.x,
+      y: moveEvt.clientY - parentRect.y
+    }, offset);
 
-    startCoords = {
-      x: moveEvt.clientX,
-      y: moveEvt.clientY
-    };
+    const address = getAddress(coord, xDiff, yDiff);
 
-    const getMainPinHeight = () => {
-      return mainPin.offsetHeight + mainPinLegHeight;
-    };
+    address.x = Math.max(address.x, MainPinPosition.MIN_HORIZONTAL);
+    address.x = Math.min(address.x, MainPinPosition.MAX_HORIZONTAL);
+    address.y = Math.max(address.y, MainPinPosition.MIN_VERTICAL);
+    address.y = Math.min(address.y, MainPinPosition.MAX_VERTICAL);
 
-    const getMinMainPinYCoord = () => {
-      return MainPinPosition.MIN_VERTICAL - getMainPinHeight();
-    };
-
-    const getMaxMainPinYCoord = () => {
-      return MainPinPosition.MAX_VERTICAL - getMainPinHeight();
-    };
-
-    if (mainPin.offsetTop < getMinMainPinYCoord()) {
-      mainPin.style.top = `${getMinMainPinYCoord()}px`;
-    } else if (mainPin.offsetTop > getMaxMainPinYCoord()) {
-      mainPin.style.top = `${getMaxMainPinYCoord()}px`;
-    } else {
-      mainPin.style.top = (mainPin.offsetTop - shift.y) + `px`;
-    }
-
-    const getMainPinCenter = () => {
-      return Math.ceil(mainPin.offsetWidth / 2);
-    };
-
-    const getMinMainPinXCoord = () => {
-      return (MainPinPosition.MIN_HORIZONTAL - getMainPinCenter());
-    };
-
-    const getMaxMainPinXCoord = () => {
-      return MainPinPosition.MAX_HORIZONTAL - getMainPinCenter();
-    };
-
-    if (mainPin.offsetLeft < getMinMainPinXCoord()) {
-      mainPin.style.left = `${-getMainPinCenter()}px`;
-    } else if (mainPin.offsetLeft > getMaxMainPinXCoord()) {
-      mainPin.style.left = `${getMaxMainPinXCoord()}px`;
-    } else {
-      mainPin.style.left = (mainPin.offsetLeft - shift.x) + `px`;
-    }
+    pinMove(mainPin, convertAddressToCoord(address, xDiff, yDiff));
 
     emitter.emit(`move`);
   };

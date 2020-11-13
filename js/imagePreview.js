@@ -8,44 +8,66 @@ const getImgElement = () => {
   return document.createElement(`img`);
 };
 
-export const clearPreviewElement = (preview) => {
-  if (preview.tagName !== IMG_TAG_NAME) {
-    removeChildren(preview);
-  } else {
-    preview.src = AVATAR_PREVIEW;
+const isImg = (element) => {
+  return element.tagName !== IMG_TAG_NAME;
+};
+
+const renderImage = (element, src) => {
+  element.src = src;
+};
+
+const renderImages = (src, fragment, parent, current, total) => {
+  const imgElement = getImgElement();
+  imgElement.src = src;
+  fragment.appendChild(imgElement);
+  if (current === total) {
+    parent.appendChild(fragment);
   }
 };
 
-export const getImagePreview = (input, preview, type) => {
-  const method = type ? `addEventListener` : `removeEventListener`;
-  input[method](`change`, () => {
+export const clearPreviewElement = (preview) => {
+  if (isImg(preview)) {
+    removeChildren(preview);
+  } else {
+    renderImage(preview, AVATAR_PREVIEW);
+  }
+};
+
+export const createOnImageChange = (preview) => {
+  return (evt) => {
+    clearPreviewElement(preview);
     const fragment = document.createDocumentFragment();
+    const input = evt.target;
     let filesCounter = 0;
     forEach(input.files, (file) => {
-      const fileName = file.name.toLowerCase();
+      const name = file.name.toLowerCase();
 
-      const matches = FILE_TYPES.some((fileType) => {
-        return fileName.endsWith(fileType);
+      const isValid = FILE_TYPES.some((fileType) => {
+        return name.endsWith(fileType);
       });
 
-      if (matches) {
-        const reader = new FileReader();
-
-        reader.addEventListener(`load`, () => {
-          if (preview.tagName !== IMG_TAG_NAME) {
-            const imgElement = getImgElement();
-            imgElement.src = reader.result;
-            fragment.appendChild(imgElement);
-            filesCounter++;
-            if (filesCounter === input.files.length) {
-              preview.appendChild(fragment);
-            }
-          } else {
-            preview.src = reader.result;
-          }
-        });
-        reader.readAsDataURL(file);
+      if (!isValid) {
+        return;
       }
+
+      const reader = new FileReader();
+
+      reader.addEventListener(`load`, () => {
+        filesCounter++;
+
+        if (isImg(preview)) {
+          renderImages(
+              reader.result,
+              fragment,
+              preview,
+              filesCounter,
+              input.files.length
+          );
+        } else {
+          renderImage(preview, reader.result);
+        }
+      });
+      reader.readAsDataURL(file);
     });
-  });
+  };
 };
