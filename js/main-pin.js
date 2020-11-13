@@ -1,6 +1,6 @@
+import {create as createEmitter} from './events.js';
 import {isEnter, isLeftMouseButton} from "./util.js";
 import {runPinMovement} from "./pin-movement.js";
-import {activate} from "./map.js";
 
 const MainPin = {
   START_X_COORD: `570px`,
@@ -9,6 +9,8 @@ const MainPin = {
 };
 
 const mainPinElement = document.querySelector(`.map__pin--main`);
+
+export const emitter = createEmitter();
 
 const getMainPinHeight = () => {
   return mainPinElement.offsetHeight;
@@ -32,18 +34,16 @@ export const getMainpinYCoord = (mapElement) => {
 const onMainpinMousedown = (evt) => {
   if (!isLeftMouseButton(evt)) {
     return;
-  } else {
-    activate();
-    runPinMovement(evt, mainPinElement, MainPin.LEG_HEIGHT);
   }
+  emitter.emit(`activate`);
+  runPinMovement(evt, mainPinElement, MainPin.LEG_HEIGHT);
 };
 
 const onMainpinKeydown = (evt) => {
   if (!isEnter(evt)) {
     return;
-  } else {
-    activate();
   }
+  emitter.emit(`activate`);
 };
 
 export const returnPinToOriginalPosition = () => {

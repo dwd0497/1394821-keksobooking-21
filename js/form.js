@@ -1,13 +1,14 @@
+import {create as createEmitter} from "./events.js";
 import {forEach, isEscape} from "./util.js";
 import {Validattion} from "./texts.js";
-import {addInactiveState, getFillAdressInput} from "./map.js";
 import {sendData} from "./xhrs.js";
 import {getImagePreview, clearPreviewElement} from "./imagePreview.js";
 import {showErrorPopup} from "./errorPopup.js";
 
+export const emitter = createEmitter();
+
 const ROOMS_VALUE_100 = 100;
 const GUESTS_VALUE_0 = 0;
-
 
 const minPrices = {
   bungalow: 0,
@@ -125,9 +126,8 @@ const showSuccessPopup = () => {
 
 const onSuccess = () => {
   showSuccessPopup();
-  addInactiveState();
+  deactivateForm();
   adformElement.reset();
-  getFillAdressInput();
   setMinPriceAndPlaceholder();
 };
 
@@ -165,6 +165,7 @@ export const deactivateForm = () => {
   getImagePreview(hotelPhotoInput, hotelPhotoPreviewElement, false);
   clearPreviewElement(avatarPreviewElement);
   clearPreviewElement(hotelPhotoPreviewElement);
+  emitter.emit(`deactivate`);
 };
 
 export const fillAdresInput = (x, y) => {
@@ -174,6 +175,5 @@ export const fillAdresInput = (x, y) => {
 const onAdformResetBtnClick = (evt) => {
   evt.preventDefault();
   adformElement.reset();
-  getFillAdressInput();
-  addInactiveState();
+  deactivateForm();
 };

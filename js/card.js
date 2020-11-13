@@ -1,5 +1,4 @@
 import {isEscape, clearParentAndRenderElements} from "./util.js";
-import {insertBeforeInMap} from "./map.js";
 
 const HotelImgs = {
   WIDTH: 45,
@@ -114,7 +113,7 @@ const renderPhoto = (img) => {
 
 const renderCard = (card) => {
   const cardElement = createСard(card);
-  insertBeforeInMap(cardElement, filtersContainerElement);
+  filtersContainerElement.insertAdjacentElement(`afterend`, cardElement);
   changeCardEventsState(true, cardElement);
 
   return cardElement;

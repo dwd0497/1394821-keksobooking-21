@@ -1,4 +1,4 @@
-import {getFillAdressInput} from "./map.js";
+import {create as createEmitter} from "./events.js";
 
 const MainPinPosition = {
   MIN_VERTICAL: 130,
@@ -6,6 +6,8 @@ const MainPinPosition = {
   MIN_HORIZONTAL: 0,
   MAX_HORIZONTAL: 1200,
 };
+
+export const emitter = createEmitter();
 
 export const runPinMovement = (evt, mainPin, mainPinLegHeight) => {
   let startCoords = {
@@ -64,7 +66,7 @@ export const runPinMovement = (evt, mainPin, mainPinLegHeight) => {
       mainPin.style.left = (mainPin.offsetLeft - shift.x) + `px`;
     }
 
-    getFillAdressInput();
+    emitter.emit(`move`);
   };
   const onMouseUp = () => {
     document.removeEventListener(`mousemove`, onMouseMove);

@@ -1,6 +1,5 @@
-import {isEnter} from "./util.js";
+import {isEnter, renderAndGetElements} from "./util.js";
 import {showCard, removeOldCard} from "./card.js";
-import {renderAndGetElements} from "./util.js";
 
 const Pin = {
   WIDTH: 50,
