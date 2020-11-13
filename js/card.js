@@ -1,5 +1,9 @@
 import {isEscape, clearParentAndRenderElements} from "./util.js";
+<<<<<<< HEAD
 import {insertBeforeInMap} from "./map.js";
+=======
+import {mapInsertBefore} from "./map.js";
+>>>>>>> cde0e0a04c6ab95e024cb04753cce835cfc7eaf7
 
 const HotelImgs = {
   WIDTH: 45,

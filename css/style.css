@@ -800,6 +800,7 @@ fieldset {
   border-radius: 5px;
   display: flex;
   flex-wrap: wrap;
+<<<<<<< HEAD
 }
 
 .ad-form__photo img {
@@ -808,6 +809,16 @@ fieldset {
   margin: 10px;
 }
 
+=======
+}
+
+.ad-form__photo img {
+  width: 44px;
+  height: 40px;
+  margin: 10px;
+}
+
+>>>>>>> cde0e0a04c6ab95e024cb04753cce835cfc7eaf7
 
 .ad-form__element--submit {
   -ms-flex-preferred-size: 100%;

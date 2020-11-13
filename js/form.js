@@ -3,11 +3,14 @@ import {Validattion} from "./texts.js";
 import {addInactiveState, getFillAdressInput} from "./map.js";
 import {sendData} from "./xhrs.js";
 import {getImagePreview, clearPreviewElement} from "./imagePreview.js";
+<<<<<<< HEAD
 import {showErrorPopup} from "./errorPopup.js";
 
 const ROOMS_VALUE_100 = 100;
 const GUESTS_VALUE_0 = 0;
 
+=======
+>>>>>>> cde0e0a04c6ab95e024cb04753cce835cfc7eaf7
 
 const minPrices = {
   bungalow: 0,
@@ -128,7 +131,10 @@ const onSuccess = () => {
   addInactiveState();
   adformElement.reset();
   getFillAdressInput();
+<<<<<<< HEAD
   setMinPriceAndPlaceholder();
+=======
+>>>>>>> cde0e0a04c6ab95e024cb04753cce835cfc7eaf7
 };
 
 const onError = (errorMessage) => {
