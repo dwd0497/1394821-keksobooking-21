@@ -32,6 +32,10 @@ const filterByFeatures = (features) => {
   return [...selectedFeatures].every((feature) => features.includes(feature.value));
 };
 
+const checkHotelOfferExist = (hotelOffer) => {
+  return hotelOffer;
+};
+
 const isAny = function (value) {
   return value === `any`;
 };
@@ -58,7 +62,8 @@ const filterByGuestsСondition = (value, currentValue) => {
 
 const getFiltered = (data, maxCount) => {
   return filter(data, (hotel) => {
-    return filterByTypeСondition(hotel.offer.type, currentFilterState[`housing-type`]) &&
+    return checkHotelOfferExist(hotel.offer) &&
+      filterByTypeСondition(hotel.offer.type, currentFilterState[`housing-type`]) &&
       filterByPriceСondition(hotel.offer.price, currentFilterState[`housing-price`]) &&
       filterByRoomsСondition(hotel.offer.rooms, currentFilterState[`housing-rooms`]) &&
       filterByGuestsСondition(hotel.offer.guests, currentFilterState[`housing-guests`]) &&

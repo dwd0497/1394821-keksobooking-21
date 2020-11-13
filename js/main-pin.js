@@ -2,7 +2,11 @@ import {isEnter, isLeftMouseButton} from "./util.js";
 import {runPinMovement} from "./pin-movement.js";
 import {activate} from "./map.js";
 
-const MAIN_PIN_LEG_HEIGHT = 22;
+const MainPin = {
+  START_X_COORD: `570px`,
+  START_Y_COORD: `375px`,
+  LEG_HEIGHT: 22,
+};
 
 const mainPinElement = document.querySelector(`.map__pin--main`);
 
@@ -22,7 +26,7 @@ export const getMainpinYCoord = (mapElement) => {
   if (mapElement.classList.contains(`map--faded`)) {
     return Math.round(parseInt(mainPinElement.style.top, 10) + getMainPinHeight() / 2);
   }
-  return Math.round(parseInt(mainPinElement.style.top, 10) + getMainPinHeight() + MAIN_PIN_LEG_HEIGHT);
+  return Math.round(parseInt(mainPinElement.style.top, 10) + getMainPinHeight() + MainPin.LEG_HEIGHT);
 };
 
 const onMainpinMousedown = (evt) => {
@@ -30,7 +34,7 @@ const onMainpinMousedown = (evt) => {
     return;
   } else {
     activate();
-    runPinMovement(evt, mainPinElement, MAIN_PIN_LEG_HEIGHT);
+    runPinMovement(evt, mainPinElement, MainPin.LEG_HEIGHT);
   }
 };
 
@@ -40,6 +44,11 @@ const onMainpinKeydown = (evt) => {
   } else {
     activate();
   }
+};
+
+export const returnPinToOriginalPosition = () => {
+  mainPinElement.style.top = MainPin.START_Y_COORD;
+  mainPinElement.style.left = MainPin.START_X_COORD;
 };
 
 export const changeMainpinEventsState = (type) => {

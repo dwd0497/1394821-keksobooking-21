@@ -603,6 +603,12 @@ fieldset {
           box-shadow: 0 0 2px 2px #ff6547;
 }
 
+.ad-form__element input:invalid,
+.ad-form__element select:invalid,
+.ad-form__element textarea:invalid {
+  border: 1px solid #ff0000;
+}
+
 .ad-form__element--time {
   -ms-flex-preferred-size: 50%;
       flex-basis: 50%;
@@ -784,13 +790,24 @@ fieldset {
 .ad-form__photo {
   margin-right: 10px;
   margin-bottom: 10px;
+  overflow: hidden;
 
-  width: 70px;
-  height: 70px;
+  min-width: 70px;
+  max-width: 256px;
+  min-height: 70px;
 
   background-color: #e4e4de;
   border-radius: 5px;
+  display: flex;
+  flex-wrap: wrap;
 }
+
+.ad-form__photo img {
+  width: 44px;
+  height: 40px;
+  margin: 10px;
+}
+
 
 .ad-form__element--submit {
   -ms-flex-preferred-size: 100%;

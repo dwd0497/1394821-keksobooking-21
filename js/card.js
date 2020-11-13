@@ -1,12 +1,5 @@
 import {isEscape, clearParentAndRenderElements} from "./util.js";
-import {mapInsertBefore} from "./map.js";
-
-const hotelTypes = {
-  flat: `Квартира`,
-  bungalow: `Бунгало`,
-  palace: `Дворец`,
-  house: `Дом`
-};
+import {insertBeforeInMap} from "./map.js";
 
 const HotelImgs = {
   WIDTH: 45,
@@ -15,6 +8,14 @@ const HotelImgs = {
 
 const filtersContainerElement = document.querySelector(`.map__filters-container`);
 const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
+
+const hotelTypes = {
+  flat: `Квартира`,
+  bungalow: `Бунгало`,
+  palace: `Дворец`,
+  house: `Дом`
+};
+
 let currentCard = null;
 
 const createСard = (hotel) => {
@@ -113,7 +114,7 @@ const renderPhoto = (img) => {
 
 const renderCard = (card) => {
   const cardElement = createСard(card);
-  mapInsertBefore(cardElement, filtersContainerElement);
+  insertBeforeInMap(cardElement, filtersContainerElement);
   changeCardEventsState(true, cardElement);
 
   return cardElement;

@@ -78,8 +78,6 @@ const onMapPinKeydown = (evt) => {
   }
 };
 
-// Фильтрация
-
 export const updatePins = (cb) => {
   removePins();
   removeOldCard();

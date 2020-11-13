@@ -2,7 +2,12 @@ import {forEach, isEscape} from "./util.js";
 import {Validattion} from "./texts.js";
 import {addInactiveState, getFillAdressInput} from "./map.js";
 import {sendData} from "./xhrs.js";
-import {getImagePreview} from "./imagePreview.js";
+import {getImagePreview, clearPreviewElement} from "./imagePreview.js";
+import {showErrorPopup} from "./errorPopup.js";
+
+const ROOMS_VALUE_100 = 100;
+const GUESTS_VALUE_0 = 0;
+
 
 const minPrices = {
   bungalow: 0,
@@ -23,14 +28,10 @@ const adformTimeoutInput = adformElement.querySelector(`#timeout`);
 const filtersFormElement = document.querySelector(`.map__filters`);
 const adformResetBtnElement = document.querySelector(`.ad-form__reset`);
 const successTemplate = document.querySelector(`#success`).content.querySelector(`.success`);
-const errorTemplate = document.querySelector(`#error`).content.querySelector(`.error`);
 const avatarInput = document.querySelector(`#avatar`);
 const avatarPreviewElement = document.querySelector(`.ad-form-header__preview img`);
 const hotelPhotoInput = document.querySelector(`#images`);
 const hotelPhotoPreviewElement = document.querySelector(`.ad-form__photo`);
-
-// Управление состоянием форм
-
 
 const toggleFormElementsState = (formElements, isDisabled) => {
   forEach(formElements, function (element) {
@@ -41,14 +42,13 @@ const toggleFormElementsState = (formElements, isDisabled) => {
 toggleFormElementsState(adformElement.children, true);
 toggleFormElementsState(filtersFormElement.children, true);
 
-// Валидация
 
 const validateGuestsAndRooms = (rooms, guests, element) => {
-  if (rooms === 100 && guests !== 0) {
+  if (rooms === ROOMS_VALUE_100 && guests !== GUESTS_VALUE_0) {
     element.setCustomValidity(Validattion.ONLY_100_ROOMS);
-  } else if (rooms < guests && guests !== 0) {
+  } else if (rooms < guests && guests !== GUESTS_VALUE_0) {
     element.setCustomValidity(Validattion.GUESTS_MORE_THEN_ROOMS);
-  } else if (rooms !== 100 && guests === 0) {
+  } else if (rooms !== ROOMS_VALUE_100 && guests === GUESTS_VALUE_0) {
     element.setCustomValidity(Validattion.NOT_FOR_GUESTS);
   } else {
     element.setCustomValidity(``);
@@ -71,6 +71,10 @@ const onAdformInputRoomNumberChange = () => {
 };
 
 const onTypeInputChange = () => {
+  setMinPriceAndPlaceholder();
+};
+
+const setMinPriceAndPlaceholder = () => {
   adformPriceInput.min = minPrices[adformTypeInput.value];
   adformPriceInput.placeholder = minPrices[adformTypeInput.value];
 };
@@ -101,49 +105,34 @@ const onPopupClick = (popup) => {
   };
 };
 
-const onEscPress = (popup) => {
-  return (evt) => {
+const createOnEscPress = (popup) => {
+  const onEscPress = (evt) => {
     if (!isEscape(evt)) {
       return;
-    } else {
-      document.removeEventListener(`keydown`, onEscPress(popup));
-      popup.remove();
     }
+    document.removeEventListener(`keydown`, onEscPress);
+    popup.remove();
   };
+  return onEscPress;
 };
 
 const showSuccessPopup = () => {
   const successPopup = successTemplate.cloneNode(true);
   adformElement.appendChild(successPopup);
   successPopup.addEventListener(`click`, onPopupClick(successPopup));
-  document.addEventListener(`keydown`, onEscPress(successPopup));
-};
-
-const onErrorPopupBtnClick = (errorPopup) => {
-  return () => {
-    errorPopup.remove();
-  };
-};
-
-const showErrorPopup = (errorMessage) => {
-  const errorPopup = errorTemplate.cloneNode(true);
-  const errorMessageElement = errorPopup.querySelector(`.error__message`);
-  const errorPopupBtn = errorPopup.querySelector(`.error__button`);
-  errorMessageElement.textContent = errorMessage;
-  mainElement.appendChild(errorPopup);
-  errorPopup.addEventListener(`click`, onPopupClick(errorPopup));
-  errorPopupBtn.addEventListener(`click`, onErrorPopupBtnClick(errorPopup));
-  document.addEventListener(`keydown`, onEscPress(errorPopup));
+  document.addEventListener(`keydown`, createOnEscPress(successPopup));
 };
 
 const onSuccess = () => {
   showSuccessPopup();
   addInactiveState();
   adformElement.reset();
+  getFillAdressInput();
+  setMinPriceAndPlaceholder();
 };
 
 const onError = (errorMessage) => {
-  showErrorPopup(errorMessage);
+  showErrorPopup(errorMessage, mainElement);
 };
 
 const changeFormInputsEventsState = (type) => {
@@ -174,15 +163,17 @@ export const deactivateForm = () => {
   adformResetBtnElement.removeEventListener(`click`, onAdformResetBtnClick);
   getImagePreview(avatarInput, avatarPreviewElement, false);
   getImagePreview(hotelPhotoInput, hotelPhotoPreviewElement, false);
+  clearPreviewElement(avatarPreviewElement);
+  clearPreviewElement(hotelPhotoPreviewElement);
 };
 
 export const fillAdresInput = (x, y) => {
   adformAdressInput.value = `${x}, ${y}`;
 };
 
-
 const onAdformResetBtnClick = (evt) => {
   evt.preventDefault();
   adformElement.reset();
   getFillAdressInput();
+  addInactiveState();
 };

@@ -18,7 +18,6 @@ export const debounce = (cb) => {
   };
 };
 
-
 export function isEnter(evt) {
   return evt.key === СontrolButtons.ENTER;
 }
@@ -66,27 +65,13 @@ export const removeChildren = (parentElement) => {
   }
 };
 
-export const removeCurrentChildren = (parentElement, element) => {
-  for (let i = parentElement.children.length - 1; i > 0; i--) {
-    if (parentElement.children[i].classList.contains(element)) {
-      parentElement.children[i].remove();
-    }
-  }
-};
-
 export const getRandomIntInclusive = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-export const getRandomSlice = (elements) => {
-  return elements.slice(getRandomIntInclusive(0, elements.length - 1));
-};
-
 export const forEach = (elements, cb) => Array.prototype.forEach.call(elements, cb);
-
-export const map = (elements, cb) => Array.prototype.map.call(elements, cb);
 
 export const filter = (elements, cb, count) => {
   const outElements = [];

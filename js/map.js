@@ -1,7 +1,7 @@
 import {loadData} from "./xhrs.js";
-import {activateForm, deactivateForm} from "./form.js";
-import {getMainpinXCoord, getMainpinYCoord} from "./main-pin.js";
-import {fillAdresInput} from "./form.js";
+import {activateForm, deactivateForm, fillAdresInput} from "./form.js";
+import {getMainpinXCoord, getMainpinYCoord, returnPinToOriginalPosition} from "./main-pin.js";
+import {showErrorPopup} from "./errorPopup.js";
 import {renderPins, removePins} from "./pin.js";
 import {removeOldCard} from "./card.js";
 import {activateFilters, deactivateFilters} from "./filter.js";
@@ -20,11 +20,9 @@ export const addInactiveState = () => {
   removePins();
   removeOldCard();
   deactivateForm();
-  getFillAdressInput();
   deactivateFilters();
+  returnPinToOriginalPosition();
 };
-
-// setTimeout(addInactiveState, 5000); // Для проверки активации неактивного состония
 
 export const getFillAdressInput = () => {
   return fillAdresInput(getMainpinXCoord(), getMainpinYCoord(map));
@@ -34,7 +32,6 @@ export const activate = () => {
   if (map.classList.contains(`map--faded`)) {
     loadData(onSccess, onError);
     getFillAdressInput();
-    // changeMainpinEventsState(false); добавить эту строчку на переход в неактивное состояние???(нет)
   }
 };
 
@@ -43,17 +40,11 @@ const onSccess = (hotels) => {
 };
 
 const onError = (errorMessage) => {
-  const node = document.createElement(`div`);
-  node.classList.add(`error_popup`);
-
-  node.textContent = errorMessage;
-  document.body.appendChild(node);
-
-  // добавить оверлей и возможноть закрытия
+  showErrorPopup(errorMessage, map);
 };
 
 getFillAdressInput();
 
-export const mapInsertBefore = (beforeElement, insertedElement) => {
+export const insertBeforeInMap = (beforeElement, insertedElement) => {
   map.insertBefore(beforeElement, insertedElement);
 };

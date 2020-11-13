@@ -1,10 +1,10 @@
 import {getFillAdressInput} from "./map.js";
 
 const MainPinPosition = {
-  MIN_VERTICAL: 0,
-  MAX_VERTICAL: 1200,
-  MIN_HORIZONTAL: 130,
-  MAX_HORIZONTAL: 630,
+  MIN_VERTICAL: 130,
+  MAX_VERTICAL: 630,
+  MIN_HORIZONTAL: 0,
+  MAX_HORIZONTAL: 1200,
 };
 
 export const runPinMovement = (evt, mainPin, mainPinLegHeight) => {
@@ -29,11 +29,11 @@ export const runPinMovement = (evt, mainPin, mainPinLegHeight) => {
     };
 
     const getMinMainPinYCoord = () => {
-      return MainPinPosition.MIN_HORIZONTAL - getMainPinHeight();
+      return MainPinPosition.MIN_VERTICAL - getMainPinHeight();
     };
 
     const getMaxMainPinYCoord = () => {
-      return MainPinPosition.MAX_HORIZONTAL - getMainPinHeight();
+      return MainPinPosition.MAX_VERTICAL - getMainPinHeight();
     };
 
     if (mainPin.offsetTop < getMinMainPinYCoord()) {
@@ -49,11 +49,11 @@ export const runPinMovement = (evt, mainPin, mainPinLegHeight) => {
     };
 
     const getMinMainPinXCoord = () => {
-      return (MainPinPosition.MIN_VERTICAL - getMainPinCenter());
+      return (MainPinPosition.MIN_HORIZONTAL - getMainPinCenter());
     };
 
     const getMaxMainPinXCoord = () => {
-      return MainPinPosition.MAX_VERTICAL - getMainPinCenter();
+      return MainPinPosition.MAX_HORIZONTAL - getMainPinCenter();
     };
 
     if (mainPin.offsetLeft < getMinMainPinXCoord()) {

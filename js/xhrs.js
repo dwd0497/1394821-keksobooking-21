@@ -1,5 +1,3 @@
-import {XHRErrorMessage} from "./texts.js";
-
 const Code = {
   SUCCESS: 200,
   INVALID_REQUEST: 400,
@@ -16,6 +14,16 @@ const Method = {
 const Server = {
   LOAD: `https://21.javascript.pages.academy/keksobooking/data`,
   SEND: `https://21.javascript.pages.academy/keksobooking`,
+};
+
+const XHRErrorMessage = {
+  INVALID_REQUEST: `Неверный запрос. Ошибка 400.`,
+  AUTHORIZATION_ERROR: `Пользователь не авторизован. Ошибка 401.`,
+  ERROR_NOT_FOUND: `Информация не найдена. Ошибка 404.`,
+  SERVER_ERROR: `Ошибка сервера. Ошибка 500.`,
+  CONNECTION_ERROR: `Произошла ошибка соединения.`,
+  TIMEOUT_ERROR: `Запрос не успел выполниться за`,
+  MILLISECONDS: `мс`,
 };
 
 const errorCodes = {
