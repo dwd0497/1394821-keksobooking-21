@@ -1,7 +1,5 @@
 const getListeners = (allListeners, event) => {
-  const listeners = allListeners[event]
-    ? allListeners[event]
-    : new Set();
+  const listeners = allListeners[event] ? allListeners[event] : new Set();
   allListeners[event] = listeners;
 
   return listeners;

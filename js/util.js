@@ -71,7 +71,7 @@ export const getRandomIntInclusive = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-export const forEach = (elements, cb) => Array.prototype.forEach.call(elements, cb);
+export const makeForEach = (elements, cb) => Array.prototype.forEach.call(elements, cb);
 
 export const filter = (elements, cb, count) => {
   const outElements = [];

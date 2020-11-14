@@ -1,5 +1,5 @@
 import {create as createEmitter} from "./events.js";
-import {forEach, isEscape} from "./util.js";
+import {makeForEach, isEscape} from "./util.js";
 import {sendData} from "./xhrs.js";
 import {createOnImageChange, clearPreviewElement} from "./imagePreview.js";
 import {showErrorPopup} from "./errorPopup.js";
@@ -44,8 +44,13 @@ const onAvatarChange = createOnImageChange(avatarPreviewElement);
 const onPhotosChange = createOnImageChange(hotelPhotoPreviewElement);
 
 const toggleFormElementsState = (formElements, isDisabled) => {
-  forEach(formElements, function (element) {
+  makeForEach(formElements, function (element) {
     element.disabled = isDisabled;
+    if (element.parentElement.classList.contains(`map__filters`) && isDisabled) {
+      element.classList.add(`hidden`);
+    } else {
+      element.classList.remove(`hidden`);
+    }
   });
 };
 

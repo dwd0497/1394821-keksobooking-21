@@ -1,4 +1,4 @@
-import {forEach, removeChildren} from "./util.js";
+import {makeForEach, removeChildren} from "./util.js";
 
 const FILE_TYPES = [`gif`, `jpg`, `jpeg`, `png`];
 const IMG_TAG_NAME = `IMG`;
@@ -39,7 +39,7 @@ export const createOnImageChange = (preview) => {
     const fragment = document.createDocumentFragment();
     const input = evt.target;
     let filesCounter = 0;
-    forEach(input.files, (file) => {
+    makeForEach(input.files, (file) => {
       const name = file.name.toLowerCase();
 
       const isValid = FILE_TYPES.some((fileType) => {
