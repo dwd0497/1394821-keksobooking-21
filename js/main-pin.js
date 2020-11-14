@@ -51,7 +51,7 @@ export const returnPinToOriginalPosition = () => {
   mainPinElement.style.left = MainPin.START_X_COORD;
 };
 
-export const changeMainpinEventsState = (type) => {
+const changeMainpinEventsState = (type) => {
   const method = type ? `addEventListener` : `removeEventListener`;
   mainPinElement[method](`mousedown`, onMainpinMousedown);
   mainPinElement[method](`keydown`, onMainpinKeydown);

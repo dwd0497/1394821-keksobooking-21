@@ -7,7 +7,7 @@ import {showErrorPopup} from "./errorPopup.js";
 const ROOMS_VALUE_100 = 100;
 const GUESTS_VALUE_0 = 0;
 
-export const Validattion = {
+const Validattion = {
   ONLY_100_ROOMS: `100 комнат не для гостей`,
   NOT_FOR_GUESTS: `Не для гостей только 100 комнатные номера`,
   GUESTS_MORE_THEN_ROOMS: `Количество мест не может превышать количество комнат`,
@@ -170,7 +170,7 @@ export const activateForm = () => {
   hotelPhotoInput.addEventListener(`change`, onPhotosChange);
 };
 
-export const deactivateForm = () => {
+const deactivateForm = () => {
   adformElement.classList.add(`ad-form--disabled`);
   toggleFormElementsState(adformElement.children, true);
   toggleFormElementsState(filtersFormElement.children, true);

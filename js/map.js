@@ -37,11 +37,11 @@ export const addInactiveState = () => {
   returnPinToOriginalPosition();
 };
 
-export const getFillAdressInput = () => {
+const getFillAdressInput = () => {
   return fillAdresInput(getMainpinXCoord(), getMainpinYCoord(map));
 };
 
-export const activate = () => {
+const activate = () => {
   if (map.classList.contains(`map--faded`)) {
     loadData(onSuccess, onError);
     getFillAdressInput();
